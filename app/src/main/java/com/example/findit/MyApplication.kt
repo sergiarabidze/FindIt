@@ -2,8 +2,9 @@ package com.example.findit
 
 import android.app.Application
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
-@AndroidEntryPoint
+@HiltAndroidApp
 class MyApplication: Application()  {
     override fun onCreate() {
         super.onCreate()
