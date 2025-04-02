@@ -1,6 +1,7 @@
 package com.example.findit.di
 
 import com.example.findit.data.request.ApiHelper
+import com.google.firebase.auth.FirebaseAuth
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -47,6 +48,12 @@ object AppModule {
                 ignoreUnknownKeys = true
             }.asConverterFactory("application/json".toMediaType()))
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 
     @Reusable

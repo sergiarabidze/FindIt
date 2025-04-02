@@ -7,6 +7,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -63,6 +64,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(platform(libs.firebase.bom))
+    implementation (libs.firebase.auth.ktx)
+    implementation (libs.play.services.auth)
 }
 kapt {
     correctErrorTypes = true
