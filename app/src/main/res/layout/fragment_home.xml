@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.screen.login.LoginFragment">
+    android:background="@color/white"
+    tools:context=".presentation.screen.home.HomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:textColor="#567ED7"/>
+        android:text="@string/hello_blank_fragment" />
 
 </FrameLayout>
