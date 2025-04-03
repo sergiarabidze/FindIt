@@ -47,14 +47,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     }
 
     override fun setObservers() {
-        launchCoroutine {
-            viewModel.registerEvent.collectLatest { event ->
-                when (event) {
-                    RegisterUiEvent.NavigateToLoginScreen -> navigateToLoginScreen()
-                    // Add other events as needed
-                }
-            }
-        }
+
     }
 
     private fun handleRegistrationClick() {
@@ -65,16 +58,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         val password = binding.etPassword.text.toString().trim()
         val confirmPassword = binding.etConfirmPassword.text.toString().trim()
 
-        viewModel.onEvent(
-            RegisterEvent.SubmitRegistrationForm(
-                firstName = name,
-                lastName = surname,
-                phoneNumber = phone,
-                email = email,
-                password = password,
-                confirmPassword = confirmPassword
-            )
-        )
     }
 
     private fun navigateToLoginScreen() {

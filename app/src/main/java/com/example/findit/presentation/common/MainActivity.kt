@@ -1,7 +1,6 @@
 package com.example.findit.presentation.common
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
@@ -10,7 +9,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.findit.R
 import com.example.findit.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 
 
 @AndroidEntryPoint
@@ -27,6 +25,16 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
         binding.bottomNavView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.loginFragment, R.id.registerFragment -> {
+                    binding.bottomNavView.visibility = android.view.View.GONE
+                }
+                else -> {
+                    binding.bottomNavView.visibility = android.view.View.VISIBLE
+                }
+            }
+        }
 
 
         binding.bottomNavView.setOnItemSelectedListener { item ->
