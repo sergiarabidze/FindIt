@@ -68,7 +68,8 @@ dependencies {
     implementation (libs.firebase.auth.ktx)
     implementation (libs.play.services.auth)
     implementation(libs.androidx.core.splashscreen)
-
+    implementation(libs.libphonenumber)
+    implementation (libs.firebase.firestore.ktx)
 }
 kapt {
     correctErrorTypes = true

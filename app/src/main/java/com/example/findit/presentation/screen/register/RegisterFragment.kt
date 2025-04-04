@@ -5,11 +5,17 @@ import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.text.style.ForegroundColorSpan
 import android.text.style.UnderlineSpan
+import android.util.Log.d
+import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.findit.R
 import com.example.findit.databinding.FragmentRegisterBinding
+import com.example.findit.domain.resource.RegisterForm
 import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.launchCoroutine
+import com.example.findit.presentation.extension.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -19,7 +25,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private val viewModel: RegisterViewModel by viewModels()
 
     override fun setUp() {
+
         setupLoginNavigationText()
+
     }
 
     private fun setupLoginNavigationText() {
@@ -34,6 +42,25 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
         loginText.text = spannableString
         loginText.movementMethod = LinkMovementMethod.getInstance()
+        binding.etEmail.addTextChangedListener {
+            addFieldsListener()
+        }
+        binding.etPassword.addTextChangedListener {
+            addFieldsListener()
+        }
+        binding.etConfirmPassword.addTextChangedListener {
+            addFieldsListener()
+        }
+        binding.etFirstName.addTextChangedListener {
+            addFieldsListener()
+        }
+        binding.etLastName.addTextChangedListener {
+            addFieldsListener()
+        }
+        binding.etPhone.addTextChangedListener {
+            addFieldsListener()
+        }
+
     }
 
     override fun setListeners() {
@@ -47,20 +74,67 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     }
 
     override fun setObservers() {
+        launchCoroutine {
+            viewModel.registerState.collectLatest { state ->
+                d("TAG", "setObservers: $state")
+                binding.progressBar.isVisible = state.isLoading
+                binding.btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
+                binding.btnSignUp.isClickable = !state.isLoading && state.btnEnabled
+
+                state.error?.let {
+                    binding.root.showSnackBar(state.error)
+                    viewModel.clearError()
+                }
+
+            }
+        }
+        launchCoroutine {
+            viewModel.registerEvent.collectLatest { event ->
+                when (event) {
+                    RegisterUiEvent.NavigateToLoginScreen -> {
+                        navigateToLoginScreen()
+                    }
+                    RegisterUiEvent.NavigateToHomeScreen -> {
+                        navigateToHomeScreen()
+                    }
+                }
+            }
+        }
 
     }
 
     private fun handleRegistrationClick() {
-        val name = binding.etFirstName.text.toString().trim()
-        val surname = binding.etLastName.text.toString().trim()
-        val phone = binding.etPhone.text.toString().trim()
-        val email = binding.etEmail.text.toString().trim()
-        val password = binding.etPassword.text.toString().trim()
-        val confirmPassword = binding.etConfirmPassword.text.toString().trim()
 
+        val registerForm = RegisterForm(
+            firstName = binding.etFirstName.text.toString().trim(),
+            lastName = binding.etLastName.text.toString().trim(),
+            phone = binding.etPhone.text.toString().trim(),
+            email = binding.etEmail.text.toString().trim(),
+            password = binding.etPassword.text.toString().trim(),
+            confirmPassword = binding.etConfirmPassword.text.toString().trim()
+        )
+        viewModel.onEvent(RegisterEvent.SubmitRegisterForm(registerForm))
+    }
+    private fun addFieldsListener() {
+        val registerForm = RegisterForm(
+            firstName = binding.etFirstName.text.toString().trim(),
+            lastName = binding.etLastName.text.toString().trim(),
+            phone = binding.etPhone.text.toString().trim(),
+            email = binding.etEmail.text.toString().trim(),
+            password = binding.etPassword.text.toString().trim(),
+            confirmPassword = binding.etConfirmPassword.text.toString().trim()
+        )
+        viewModel.onEvent(RegisterEvent.ValidateRegisterForm(registerForm))
     }
 
     private fun navigateToLoginScreen() {
         findNavController().popBackStack()
     }
+    private fun navigateToHomeScreen() {
+        val action = RegisterFragmentDirections.actionRegisterFragmentToHomeFragment()
+        findNavController().navigate(action)
+    }
+
+
+
 }

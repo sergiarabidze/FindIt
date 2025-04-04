@@ -25,14 +25,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
         val startIndex = spannableString.indexOf("Register now")
         val endIndex = startIndex + "Register now".length
-
         spannableString.setSpan(UnderlineSpan(), startIndex, endIndex, 0)
         spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#0077CC")), startIndex, endIndex, 0)
-
         registerText.text = spannableString
-
         registerText.movementMethod = LinkMovementMethod.getInstance()
-
+        
     }
 
     override fun setListeners() {
@@ -69,9 +66,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 }
             }
         }
-
-
-
 
 
 
