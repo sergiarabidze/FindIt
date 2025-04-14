@@ -41,6 +41,10 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.ValidateRegisterForm ->{
                 validateRegisterForm(event.registerForm)
             }
+
+            RegisterEvent.ClearError -> {
+                clearError()
+            }
         }
 
     }
@@ -64,7 +68,6 @@ class RegisterViewModel @Inject constructor(
                                 _registerState.value = _registerState.value.copy(isLoading = resource.isLoading)
                             }
                             is Resource.Success -> {
-                                d("TAG", "handleRegister: ${resource.data}")
                                 _registerState.value = _registerState.value.copy(isLoading = false)
                                 _registerEvent.emit(RegisterUiEvent.NavigateToHomeScreen)
                             }
@@ -90,7 +93,8 @@ class RegisterViewModel @Inject constructor(
 
         }
     }
-    fun clearError() {
+
+    private fun clearError() {
         _registerState.value = _registerState.value.copy(error = null)
     }
 }

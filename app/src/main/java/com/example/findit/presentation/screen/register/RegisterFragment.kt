@@ -2,10 +2,11 @@ package com.example.findit.presentation.screen.register
 
 import android.graphics.Color
 import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ForegroundColorSpan
-import android.text.style.UnderlineSpan
-import android.util.Log.d
+import android.text.style.ClickableSpan
+import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -14,6 +15,7 @@ import com.example.findit.R
 import com.example.findit.databinding.FragmentRegisterBinding
 import com.example.findit.domain.resource.RegisterForm
 import com.example.findit.presentation.base.BaseFragment
+import com.example.findit.presentation.extension.hideKeyboard
 import com.example.findit.presentation.extension.launchCoroutine
 import com.example.findit.presentation.extension.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,20 +30,67 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
         setupLoginNavigationText()
 
+        addListeners()
+
     }
 
-    private fun setupLoginNavigationText() {
-        val loginText = binding.tvLoginNav
-        val spannableString = SpannableString("Already have an account? Log in")
 
-        val startIndex = spannableString.indexOf("Log in")
-        val endIndex = startIndex + "Log in".length
+    override fun setListeners() {
+        binding.btnSignUp.setOnClickListener {
+            it.hideKeyboard()
+            handleRegistrationClick()
+        }
+    }
 
-        spannableString.setSpan(UnderlineSpan(), startIndex, endIndex, 0)
-        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#0077CC")), startIndex, endIndex, 0)
+    override fun setObservers() {
+        launchCoroutine {
+            viewModel.registerState.collectLatest { state ->
+                binding.progressBar.isVisible = state.isLoading
+                binding.btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
+                binding.btnSignUp.isClickable = !state.isLoading && state.btnEnabled
 
-        loginText.text = spannableString
-        loginText.movementMethod = LinkMovementMethod.getInstance()
+                if(!state.btnEnabled){
+                    binding.btnSignUp.setBackgroundColor(R.color.background_color)
+                }else{
+                    binding.btnSignUp.setBackgroundColor(R.color.ic_launcher_background)
+                }
+
+                state.error?.let {
+                    binding.root.showSnackBar(state.error)
+                    viewModel.onEvent(RegisterEvent.ClearError)
+                }
+
+            }
+        }
+
+        launchCoroutine {
+            viewModel.registerEvent.collectLatest { event ->
+                when (event) {
+                    RegisterUiEvent.NavigateToLoginScreen -> {
+                        navigateToLoginScreen()
+                    }
+                    RegisterUiEvent.NavigateToHomeScreen -> {
+                        navigateToHomeScreen()
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun handleRegistrationClick() {
+        val registerForm = RegisterForm(
+            firstName = binding.etFirstName.text.toString().trim(),
+            lastName = binding.etLastName.text.toString().trim(),
+            phone = binding.etPhone.text.toString().trim(),
+            email = binding.etEmail.text.toString().trim(),
+            password = binding.etPassword.text.toString().trim(),
+            confirmPassword = binding.etConfirmPassword.text.toString().trim()
+        )
+        viewModel.onEvent(RegisterEvent.SubmitRegisterForm(registerForm))
+    }
+
+    private fun addListeners() {
         binding.etEmail.addTextChangedListener {
             addFieldsListener()
         }
@@ -60,61 +109,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         binding.etPhone.addTextChangedListener {
             addFieldsListener()
         }
-
     }
 
-    override fun setListeners() {
-        binding.btnSignUp.setOnClickListener {
-            handleRegistrationClick()
-        }
-
-        binding.tvLoginNav.setOnClickListener {
-            viewModel.onEvent(RegisterEvent.NavigateToLoginScreen)
-        }
-    }
-
-    override fun setObservers() {
-        launchCoroutine {
-            viewModel.registerState.collectLatest { state ->
-                d("TAG", "setObservers: $state")
-                binding.progressBar.isVisible = state.isLoading
-                binding.btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
-                binding.btnSignUp.isClickable = !state.isLoading && state.btnEnabled
-
-                state.error?.let {
-                    binding.root.showSnackBar(state.error)
-                    viewModel.clearError()
-                }
-
-            }
-        }
-        launchCoroutine {
-            viewModel.registerEvent.collectLatest { event ->
-                when (event) {
-                    RegisterUiEvent.NavigateToLoginScreen -> {
-                        navigateToLoginScreen()
-                    }
-                    RegisterUiEvent.NavigateToHomeScreen -> {
-                        navigateToHomeScreen()
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun handleRegistrationClick() {
-
-        val registerForm = RegisterForm(
-            firstName = binding.etFirstName.text.toString().trim(),
-            lastName = binding.etLastName.text.toString().trim(),
-            phone = binding.etPhone.text.toString().trim(),
-            email = binding.etEmail.text.toString().trim(),
-            password = binding.etPassword.text.toString().trim(),
-            confirmPassword = binding.etConfirmPassword.text.toString().trim()
-        )
-        viewModel.onEvent(RegisterEvent.SubmitRegisterForm(registerForm))
-    }
     private fun addFieldsListener() {
         val registerForm = RegisterForm(
             firstName = binding.etFirstName.text.toString().trim(),
@@ -130,11 +126,43 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private fun navigateToLoginScreen() {
         findNavController().popBackStack()
     }
+
     private fun navigateToHomeScreen() {
         val action = RegisterFragmentDirections.actionRegisterFragmentToHomeFragment()
         findNavController().navigate(action)
     }
 
+    private fun setupLoginNavigationText() {
+        val loginText = binding.tvLoginNav
+
+        val fullText = getString(R.string.already_have_an_account_log_in)
+        val targetText = getString(R.string.log_in)
+        val spannableString = SpannableString(fullText)
+
+        val startIndex = fullText.indexOf(targetText)
+        val endIndex = startIndex + targetText.length
+
+        if (startIndex == -1) return // prevent crash if the text isn't found
+
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                viewModel.onEvent(RegisterEvent.NavigateToLoginScreen)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = true
+                ds.color = Color.parseColor("#0077CC")//male sheicvleba jigari
+            }
+        }
+
+        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        loginText.text = spannableString
+        loginText.movementMethod = LinkMovementMethod.getInstance()
+        loginText.highlightColor = Color.TRANSPARENT
+    }
 
 
 }
+

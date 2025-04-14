@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/black">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,53 +22,78 @@
             android:layout_marginTop="80dp"
             android:layout_marginBottom="16dp"/>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
             android:inputType="textPersonName"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/auth_edit_text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#66666A"
+            />
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/surname"
             android:inputType="textPersonName"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/auth_edit_text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#66666A"/>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/phone_number"
             android:inputType="phone"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/auth_edit_text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#66666A"/>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/auth_edit_text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#66666A"/>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/auth_edit_text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#66666A"/>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/confirm_password"
             android:inputType="textPassword"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/auth_edit_text"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textColorHint="#66666A"/>
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -76,9 +101,10 @@
             android:id="@+id/progress_bar"
             android:layout_marginBottom="24dp"
             android:layout_gravity="center"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/already_have_an_account_log_in"
-            android:textSize="14sp"/>
+            android:textSize="16sp"/>
 
     </LinearLayout>
 
