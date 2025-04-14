@@ -1,5 +1,6 @@
 package com.example.findit.presentation.screen.login
 
+import android.util.Log.d
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.domain.resource.Resource
@@ -29,47 +30,73 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.SubmitLoginForm -> {
                 handleLogin(event.email, event.password)
             }
+
             is LoginEvent.NavigateToRegisterScreen -> {
                 handleRegisterNavigation()
             }
-        }
 
+            is LoginEvent.ValidateLoginForm -> {
+                validateLoginForm(event.email, event.password)
+            }
+
+            LoginEvent.ClearError ->{
+                clearError()
+            }
+        }
     }
 
-    private fun handleLogin(email :String, password : String){
+    private fun handleLogin(email: String, password: String) {
         viewModelScope.launch {
             loginUseCase(email, password).collectLatest { resource ->
-                when(resource){
-                    is Resource.Error ->{
+                when (resource) {
+                    is Resource.Error -> {
+                        d("LoginViewModel", "Login error: ${resource.errorMessage}")
                         _loginState.value = _loginState.value.copy(
                             error = resource.errorMessage,
                             isLoading = false
                         )
                     }
 
-                    is Resource.Loader ->{
+                    is Resource.Loader -> {
                         _loginState.value = _loginState.value.copy(
                             isLoading = resource.isLoading
                         )
                     }
 
-                    is Resource.Success ->{
+                    is Resource.Success -> {
                         _loginState.value = _loginState.value.copy(
                             isLoading = false
                         )
+                        d("LoginViewModel", "Login successful")
                         _loginEvent.emit(LoginUiEvent.NavigateToHomeScreen)
                     }
                 }
             }
         }
     }
-    private fun handleRegisterNavigation(){
+
+    private fun handleRegisterNavigation() {
         viewModelScope.launch {
             _loginEvent.emit(LoginUiEvent.NavigateToRegisterScreen)
         }
 
     }
-    fun clearError(){
+
+    private fun validateLoginForm(email: String, password: String) {
+        viewModelScope.launch {
+            if (email.isBlank() || password.isBlank()) {
+                _loginState.value = _loginState.value.copy(
+                    btnEnabled = false
+                )
+            } else {
+                _loginState.value = _loginState.value.copy(
+                    btnEnabled = true
+                )
+            }
+        }
+    }
+
+    private fun clearError() {
         _loginState.value = _loginState.value.copy(
             error = null
         )
