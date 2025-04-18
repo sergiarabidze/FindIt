@@ -29,7 +29,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
     override fun setUp() {
 
-        //setupSignUpNavigationText()
+        setupSignUpNavigationText()
 
     }
 
@@ -38,8 +38,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             it.hideKeyboard()
             handleLoginClick()
         }
-
-        navigateToHomeScreen()
     }
 
     override fun setObservers() {

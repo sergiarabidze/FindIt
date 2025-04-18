@@ -28,6 +28,14 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
                         setLocale(effect.languageCode)
                         navigateNext()
                     }
+                    is SplashEffect.NavigateToHomeScreen ->{
+                        val action = SplashFragmentDirections.actionSplashFragmentToHomeFragment()
+                        findNavController().navigate(action)
+                    }
+                    is SplashEffect.NavigateToLoginScreen ->{
+                        val action = SplashFragmentDirections.actionSplashFragmentToLoginFragment()
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }
