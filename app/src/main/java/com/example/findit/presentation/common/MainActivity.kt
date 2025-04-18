@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.loginFragment, R.id.registerFragment -> {
+                R.id.loginFragment, R.id.registerFragment, R.id.editProfileFragment-> {
                     binding.bottomNavView.visibility = android.view.View.GONE
                 }
                 else -> {

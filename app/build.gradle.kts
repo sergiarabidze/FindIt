@@ -70,6 +70,8 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.libphonenumber)
     implementation (libs.firebase.firestore.ktx)
+    implementation(libs.androidx.datastore.preferences)
+
 }
 kapt {
     correctErrorTypes = true

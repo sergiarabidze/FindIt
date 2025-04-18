@@ -1,0 +1,9 @@
+package com.example.findit.domain.repository
+
+import com.example.findit.domain.model.UserProfile
+import com.example.findit.domain.resource.Resource
+import kotlinx.coroutines.flow.Flow
+
+interface GetUserProfileRepository {
+    suspend fun getUserProfile(): Flow<Resource<UserProfile>>
+}

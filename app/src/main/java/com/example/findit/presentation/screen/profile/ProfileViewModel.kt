@@ -1,16 +1,21 @@
 package com.example.findit.presentation.screen.profile
 
-import android.content.res.Configuration
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.findit.domain.usecase.SetAppLanguageUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
-class ProfileViewModel : ViewModel() {
+import javax.inject.Inject
+
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val setAppLanguage: SetAppLanguageUseCase
+) : ViewModel() {
 
     private val _state = MutableStateFlow(ProfileState())
     val state: StateFlow<ProfileState> = _state
@@ -21,14 +26,25 @@ class ProfileViewModel : ViewModel() {
     fun onEvent(event: ProfileEvent) {
         when (event) {
             is ProfileEvent.ChangeLanguageClicked -> {
-                sendEffect(ProfileEffect.ChangeLanguage)
+                changeAppLanguage()
+            }
+            is ProfileEvent.EditProfileClicked -> {
+                navigateToEditProfile()
             }
         }
     }
 
-    private fun sendEffect(effect: ProfileEffect) {
+    private fun changeAppLanguage() {
         viewModelScope.launch {
-            _effect.emit(effect)
+            val newLang = if (Locale.getDefault().language == "en") "ka" else "en"
+            setAppLanguage(newLang)
+            _effect.emit(ProfileEffect.ChangeLanguage(newLang))
+        }
+    }
+
+    private fun navigateToEditProfile() {
+        viewModelScope.launch {
+            _effect.emit(ProfileEffect.NavigateToEditProfile)
         }
     }
 }
