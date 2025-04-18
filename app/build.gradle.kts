@@ -48,6 +48,8 @@ android {
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.common)
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.retrofit)
@@ -70,6 +72,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.libphonenumber)
     implementation (libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage)
 }
 kapt {
     correctErrorTypes = true

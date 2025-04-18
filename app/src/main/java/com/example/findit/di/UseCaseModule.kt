@@ -13,4 +13,5 @@ object UseCaseModule {
     fun provideValidateRegisterUseCase() : RegisterValidationUseCase {
         return RegisterValidationUseCase()
     }
+
 }

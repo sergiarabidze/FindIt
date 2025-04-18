@@ -28,7 +28,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private val viewModel: LoginViewModel by viewModels()
 
     override fun setUp() {
-        setupSignUpNavigationText()
+
+        //setupSignUpNavigationText()
+
     }
 
     override fun setListeners() {
@@ -37,6 +39,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             handleLoginClick()
         }
 
+        navigateToHomeScreen()
     }
 
     override fun setObservers() {
@@ -63,9 +66,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     } else {
                         binding.btnLogin.setBackgroundColor(R.color.ic_launcher_background)
                     }
-                    d("LoginFragment", "Login state: ${state.error}")
                     state.error?.let {
-                        d("LoginFragment", "Error: $it")
                         binding.root.showSnackBar(state.error)
                         viewModel.onEvent(LoginEvent.ClearError)
                     }
@@ -86,6 +87,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         findNavController().navigate(action)
     }
     private fun navigateToHomeScreen(){
+        d("LoginFragment", "Navigate to home screen")
         val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
         findNavController().navigate(action)
     }

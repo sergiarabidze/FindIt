@@ -4,6 +4,7 @@ import com.example.findit.data.request.ApiHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthSettings
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -67,5 +68,10 @@ object AppModule {
     @Provides
     fun provideApiHelper(): ApiHelper {
         return ApiHelper()
+    }
+
+    @Provides
+    fun provideStorage():FirebaseStorage{
+        return FirebaseStorage.getInstance()
     }
 }

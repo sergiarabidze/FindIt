@@ -1,60 +1,156 @@
 package com.example.findit.presentation.screen.addpost
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.net.Uri
+import android.os.Environment
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
+import androidx.core.view.isGone
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.findit.R
+import com.example.findit.databinding.FragmentAddPostBinding
+import com.example.findit.presentation.base.BaseFragment
+import com.example.findit.presentation.extension.launchCoroutine
+import com.example.findit.presentation.extension.showSnackBar
+import com.example.findit.presentation.screen.add_image_dialog.ImageOptionDialog
+import com.example.findit.presentation.screen.model.ImagePickOption
+import com.google.firebase.firestore.GeoPoint
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import java.io.File
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBinding::inflate) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddPostFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AddPostFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel : AddPostViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private var tempCameraUri: Uri? = null
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                viewModel.onEvent(AddPostEvent.ImageSelected(it))
+            }
+        }
+
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                tempCameraUri?.let { uri ->
+                    viewModel.onEvent(AddPostEvent.ImageSelected(uri))
+                    tempCameraUri = null
+                }
+            }
+        }
+
+    override fun setUp() {
+        parentFragmentManager.setFragmentResultListener(
+            ImageOptionDialog.REQUEST_KEY,
+            viewLifecycleOwner
+        ) { _, result ->
+            val selected = result.getString(ImageOptionDialog.RESULT_KEY)
+            val option = selected?.let { ImagePickOption.valueOf(it) }
+
+            when (option) {
+                ImagePickOption.CAMERA -> {
+                    openCamera()
+                }
+
+                ImagePickOption.GALLERY -> {
+                    openGallery()
+                }
+                null -> {}
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_post, container, false)
+    override fun setListeners() {
+        with(binding) {
+            addPhotoId.setOnClickListener {
+                viewModel.onEvent(AddPostEvent.OpenDialog)
+            }
+
+            addLocationId.setOnClickListener {
+                viewModel.onEvent(AddPostEvent.AddLocation(GeoPoint(0.0,0.0)))
+            }
+
+            addPostId.setOnClickListener {
+                addPost()
+            }
+
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddPostFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddPostFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun setObservers() {
+        launchCoroutine {
+            viewModel.state.collectLatest{ state ->
+                with(binding) {
+                    photoId.setImageBitmap(state.bitmap)
+                    photoId.isGone = state.bitmap == null
+                    state.error?.let {
+                        root.showSnackBar("raghacas urev")
+                    }
                 }
             }
+        }
+        launchCoroutine {
+            viewModel.event.collectLatest{event->
+                when(event){
+                    AddPostUiEvent.OpenImageOptions ->{
+                        openOptionsDialog()
+                    }
+                    AddPostUiEvent.OpenLocation ->{
+
+                    }
+
+                    AddPostUiEvent.AddPost ->{
+                        binding.root.showSnackBar("successfully aitvirta")
+                        navigateToHomeScreen()
+                    }
+                }
+            }
+        }
     }
+
+    private fun openGallery() {
+        galleryLauncher.launch(getString(R.string.image))
+    }
+
+    private fun openCamera() {
+        getTempFileUri().let { uri ->
+            tempCameraUri = uri
+            cameraLauncher.launch(uri)
+        }
+    }
+
+    private fun getTempFileUri(): Uri {
+        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val file = File.createTempFile(getString(R.string.img, System.currentTimeMillis().toString()),
+            getString(
+                R.string.jpg
+            ), storageDir)
+        return FileProvider.getUriForFile(
+            requireContext(),
+            getString(R.string.provider, requireContext().packageName),
+            file
+        )
+    }
+
+    private fun addPost(){
+        with(binding){
+            val desc = descriptionId.text.toString()
+            viewModel.onEvent(AddPostEvent.AddPost(desc, geoPoint = GeoPoint(0.0,0.0)))
+        }
+    }
+
+    private fun openOptionsDialog(){
+        val action = AddPostFragmentDirections.actionAddPostFragmentToImageOptionDialog()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToHomeScreen(){
+        val action = AddPostFragmentDirections.actionAddPostFragmentToHomeFragment()
+        findNavController().navigate(action)
+    }
+
 }
