@@ -5,7 +5,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.findit.databinding.FragmentImageOptionDialogBinding
 import com.example.findit.presentation.base.BaseBottomSheetFragment
-import com.example.findit.presentation.screen.model.ImagePickOption
+import com.example.findit.presentation.model.ImagePickOption
 
 
 class ImageOptionDialog : BaseBottomSheetFragment<FragmentImageOptionDialogBinding>(FragmentImageOptionDialogBinding::inflate) {

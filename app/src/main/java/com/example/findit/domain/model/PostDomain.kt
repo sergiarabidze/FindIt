@@ -8,5 +8,6 @@ data class PostDomain(
     val description: String,
     val userId: String,
     val timestamp: Long,
-    val location: LocationModel
+    val location: LocationModel,
+    val postType: PostType
 )

@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log.d
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.data.mapper.toDomain
@@ -13,7 +12,7 @@ import com.example.findit.domain.resource.Resource
 import com.example.findit.domain.usecase.GetCurrentUserIdUseCase
 import com.example.findit.domain.usecase.UploadPostPhotoUseCase
 import com.example.findit.domain.usecase.UploadPostUseCase
-import com.example.findit.presentation.model.PostPresentation
+import com.example.findit.domain.model.PostType
 import com.google.firebase.firestore.GeoPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -50,7 +49,7 @@ class AddPostViewModel @Inject constructor(
                 handleOpenDialog()
             }
             is AddPostEvent.AddPost ->{
-                addPost(event.description,event.geoPoint)
+                addPost(event.type,event.description,event.geoPoint)
             }
             is AddPostEvent.ClearError -> {
                 clearError()
@@ -96,7 +95,7 @@ class AddPostViewModel @Inject constructor(
         }
     }
 
-    private fun addPost(description: String, geoPoint: GeoPoint){
+    private fun addPost(type : PostType, description: String, geoPoint: GeoPoint){
         viewModelScope.launch {
             state.value.bitmap?.let { uploadPostPhotoUseCase(it) }?.collectLatest { resource ->
                 when(resource){
@@ -114,6 +113,7 @@ class AddPostViewModel @Inject constructor(
                             userId = currentUser ?: "",
                             location = geoPoint.toDomain(),
                             timestamp = System.currentTimeMillis(),
+                            postType = type
                         )
                         uploadPostUseCase(post).collectLatest{
                             when(it){

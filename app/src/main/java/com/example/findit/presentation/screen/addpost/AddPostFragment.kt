@@ -13,7 +13,9 @@ import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.launchCoroutine
 import com.example.findit.presentation.extension.showSnackBar
 import com.example.findit.presentation.screen.add_image_dialog.ImageOptionDialog
-import com.example.findit.presentation.screen.model.ImagePickOption
+import com.example.findit.presentation.model.ImagePickOption
+import com.example.findit.domain.model.PostType
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.GeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -139,7 +141,12 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
     private fun addPost(){
         with(binding){
             val desc = descriptionId.text.toString()
-            viewModel.onEvent(AddPostEvent.AddPost(desc, geoPoint = GeoPoint(0.0,0.0)))
+            val postType = when (binding.typeRadioGroup.checkedRadioButtonId) {
+                R.id.found_radio -> PostType.FOUND
+                R.id.lost_radio -> PostType.LOST
+                else -> PostType.FOUND
+            }
+            viewModel.onEvent(AddPostEvent.AddPost(type = postType, desc, geoPoint = GeoPoint(0.0,0.0)))
         }
     }
 
@@ -149,8 +156,9 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
     }
 
     private fun navigateToHomeScreen(){
-        val action = AddPostFragmentDirections.actionAddPostFragmentToHomeFragment()
-        findNavController().navigate(action)
+        requireActivity()
+            .findViewById<BottomNavigationView>(R.id.bottomNavView)
+            .selectedItemId = R.id.homeFragment
     }
 
 }

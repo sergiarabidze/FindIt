@@ -1,5 +1,6 @@
 package com.example.findit.data.dto
 
+import com.example.findit.domain.model.PostType
 import com.google.firebase.firestore.GeoPoint
 
 data class PostDto(
@@ -8,5 +9,6 @@ data class PostDto(
     val description: String,
     val userId: String,
     val timestamp: Long,
-    val location: GeoPoint
+    val location: GeoPoint,
+    val postType: PostType
 )

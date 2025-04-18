@@ -33,4 +33,6 @@
     <string name="jpg" translatable="false">.jpg</string>
     <string name="provider" translatable="false">%1$s.provider</string>
     <string name="image" translatable="false">image/*</string>
+    <string name="lost">Lost</string>
+    <string name="found">Found</string>
 </resources>

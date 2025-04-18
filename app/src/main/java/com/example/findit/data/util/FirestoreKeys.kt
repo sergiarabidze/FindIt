@@ -10,4 +10,5 @@ object FirestoreKeys {
     const val LOCATION = "location"
     const val LATITUDE = "latitude"
     const val LONGITUDE = "longitude"
+    const val POST_TYPE = "postType"
 }

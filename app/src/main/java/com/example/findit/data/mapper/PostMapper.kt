@@ -13,7 +13,8 @@ fun PostDto.toDomain(): PostDomain {
         description = description,
         userId = userId,
         timestamp = timestamp,
-        location = location.toDomain()
+        location = location.toDomain(),
+        postType = postType
     )
 }
 
@@ -31,7 +32,8 @@ fun PostDomain.toDto(): PostDto {
         description = description,
         userId = userId,
         timestamp = timestamp,
-        location = GeoPoint(location.latitude, location.longitude)
+        location = GeoPoint(location.latitude, location.longitude),
+        postType = postType
     )
 }
 fun PostDomain.toFirestoreMap(): Map<String, Any> {
@@ -44,6 +46,7 @@ fun PostDomain.toFirestoreMap(): Map<String, Any> {
         FirestoreKeys.LOCATION to mapOf(
             FirestoreKeys.LATITUDE to location.latitude,
             FirestoreKeys.LONGITUDE to location.longitude
-        )
+        ),
+        FirestoreKeys.POST_TYPE to postType.toString()
     )
 }

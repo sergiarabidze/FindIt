@@ -25,6 +25,7 @@ fun PostPresentation.toDomain(): PostDomain {
         location = LocationModel(
             latitude = location.latitude,
             longitude = location.longitude
-        )
+        ),
+        postType = postType
     )
 }
