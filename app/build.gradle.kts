@@ -48,6 +48,9 @@ android {
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.firebase.storage)
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.retrofit)

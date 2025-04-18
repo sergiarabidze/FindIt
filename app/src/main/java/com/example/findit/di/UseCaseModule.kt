@@ -41,4 +41,5 @@ object UseCaseModule {
     fun provideUpdateProfileUseCase(
         impl : UpdateProfileUseCaseImpl
     ):UpdateProfileUseCase = impl
+
 }

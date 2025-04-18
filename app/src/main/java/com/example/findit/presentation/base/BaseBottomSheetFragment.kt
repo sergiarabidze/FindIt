@@ -1,27 +1,26 @@
 package com.example.findit.presentation.base
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
+typealias BottomSheetInflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
-typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
-
-abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) : Fragment() {
+abstract class BaseBottomSheetFragment<VB : ViewBinding>(
+    private val inflate: BottomSheetInflate<VB>
+) : BottomSheetDialogFragment() {
 
     private var _binding: VB? = null
     val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setData()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return BottomSheetDialog(requireContext())
     }
-
-    open fun setData() = Unit
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,10 +37,7 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
         setUp()
         setListeners()
         setRecycler()
-        setObservers()
     }
-
-    open fun setObservers() = Unit
 
     open fun setUp() = Unit
 
@@ -51,7 +47,6 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
 
     override fun onDestroyView() {
         super.onDestroyView()
-
         _binding = null
     }
 }

@@ -2,8 +2,11 @@ package com.example.findit.data.request
 
 
 import com.example.findit.domain.resource.Resource
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -37,24 +40,24 @@ class ApiHelper{
             }
         }
 
-//    fun <T : Any> safeFireBaseCall(call: () -> Task<T>): Flow<Resource<T>> = flow {
-//        emit(Resource.Loading)
-//
-//        try {
-//            val task = call()
-//            val result = task.await()
-//
-//            if (task.isSuccessful) {
-//                emit(Resource.Success(result))
-//            } else {
-//                emit(Resource.Error(task.exception?.localizedMessage ?: ""))
-//            }
-//
-//        } catch (e: FirebaseAuthException) {
-//            emit(Resource.Error( e.message ?: ""))
-//        } catch (e: Throwable) {
-//            emit(Resource.Error(e.message ?: ""))
-//        }
-//    }
+    fun <T : Any> safeFireBaseCall(call: () -> Task<T>): Flow<Resource<T>> = flow {
+        emit(Resource.Loader(isLoading = true))
+
+        try {
+            val task = call()
+            val result = task.await()
+
+            if (task.isSuccessful) {
+                emit(Resource.Success(result))
+            } else {
+                emit(Resource.Error(task.exception?.localizedMessage ?: ""))
+            }
+
+        } catch (e: FirebaseAuthException) {
+            emit(Resource.Error( e.message ?: ""))
+        } catch (e: Throwable) {
+            emit(Resource.Error(e.message ?: ""))
+        }
+    }
 }
 

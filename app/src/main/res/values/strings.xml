@@ -21,5 +21,17 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="change_language">Change Language</string>
     <string name="change_theme">Change Theme</string>
+    <string name="you_don_t_have_an_account_register_now">You don\'t have an account? Register now</string>
     <string name="register_now">Register now</string>
+    <string name="post">Post</string>
+    <string name="add_description">Add Description</string>
+    <string name="add_image">Add Image</string>
+    <string name="add_location">Add Location</string>
+    <string name="select_photo_source">Select Photo Source</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="cancel">Cancel</string>
+    <string name="img" translatable="false">IMG_%1$s</string>
+    <string name="jpg" translatable="false">.jpg</string>
+    <string name="provider" translatable="false">%1$s.provider</string>
+    <string name="image" translatable="false">image/*</string>
 </resources>

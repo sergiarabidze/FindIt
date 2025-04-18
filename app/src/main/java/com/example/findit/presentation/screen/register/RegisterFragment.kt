@@ -27,9 +27,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private val viewModel: RegisterViewModel by viewModels()
 
     override fun setUp() {
-
         setupLoginNavigationText()
-
         addListeners()
 
     }
@@ -45,21 +43,22 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     override fun setObservers() {
         launchCoroutine {
             viewModel.registerState.collectLatest { state ->
-                binding.progressBar.isVisible = state.isLoading
-                binding.btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
-                binding.btnSignUp.isClickable = !state.isLoading && state.btnEnabled
+                with(binding) {
+                    progressBar.isVisible = state.isLoading
+                    btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
+                    btnSignUp.isClickable = !state.isLoading && state.btnEnabled
 
-                if(!state.btnEnabled){
-                    binding.btnSignUp.setBackgroundColor(R.color.background_color)
-                }else{
-                    binding.btnSignUp.setBackgroundColor(R.color.ic_launcher_background)
+                    if (!state.btnEnabled) {
+                        btnSignUp.setBackgroundColor(R.color.background_color)
+                    } else {
+                        btnSignUp.setBackgroundColor(R.color.ic_launcher_background)
+                    }
+
+                    state.error?.let {
+                        root.showSnackBar(state.error)
+                        viewModel.onEvent(RegisterEvent.ClearError)
+                    }
                 }
-
-                state.error?.let {
-                    binding.root.showSnackBar(state.error)
-                    viewModel.onEvent(RegisterEvent.ClearError)
-                }
-
             }
         }
 
@@ -79,15 +78,18 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     }
 
     private fun handleRegistrationClick() {
-        val registerForm = RegisterForm(
-            firstName = binding.etFirstName.text.toString().trim(),
-            lastName = binding.etLastName.text.toString().trim(),
-            phone = binding.etPhone.text.toString().trim(),
-            email = binding.etEmail.text.toString().trim(),
-            password = binding.etPassword.text.toString().trim(),
-            confirmPassword = binding.etConfirmPassword.text.toString().trim()
-        )
-        viewModel.onEvent(RegisterEvent.SubmitRegisterForm(registerForm))
+        with(binding) {
+            val registerForm = RegisterForm(
+                firstName = etFirstName.text.toString().trim(),
+                lastName = etLastName.text.toString().trim(),
+                phone = etPhone.text.toString().trim(),
+                email = etEmail.text.toString().trim(),
+                password = etPassword.text.toString().trim(),
+                confirmPassword = etConfirmPassword.text.toString().trim()
+            )
+
+            viewModel.onEvent(RegisterEvent.SubmitRegisterForm(registerForm))
+        }
     }
 
     private fun addListeners() {
