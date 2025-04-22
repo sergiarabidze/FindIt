@@ -5,6 +5,7 @@ import com.example.findit.domain.resource.Resource
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuthException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import retrofit2.HttpException
@@ -40,7 +41,7 @@ class ApiHelper{
             }
         }
 
-    fun <T : Any> safeFireBaseCall(call: () -> Task<T>): Flow<Resource<T>> = flow {
+    fun <T : Any> safeFireBaseCall(call: suspend () -> Task<T>): Flow<Resource<T>> = flow {
         emit(Resource.Loader(isLoading = true))
 
         try {
@@ -52,12 +53,14 @@ class ApiHelper{
             } else {
                 emit(Resource.Error(task.exception?.localizedMessage ?: ""))
             }
-
         } catch (e: FirebaseAuthException) {
+
             emit(Resource.Error( e.message ?: ""))
         } catch (e: Throwable) {
             emit(Resource.Error(e.message ?: ""))
         }
+    }.catch {
+        emit(Resource.Error(it.message ?: ""))
     }
 }
 

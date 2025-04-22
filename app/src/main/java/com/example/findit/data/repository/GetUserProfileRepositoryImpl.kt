@@ -1,5 +1,6 @@
 package com.example.findit.data.repository
 
+import com.example.findit.data.util.FirestoreKeys
 import com.example.findit.domain.model.UserProfile
 import com.example.findit.domain.repository.GetUserProfileRepository
 import com.example.findit.domain.resource.Resource
@@ -19,13 +20,13 @@ class GetUserProfileRepositoryImpl @Inject constructor(
         emit(Resource.Loader(true))
         try {
             val uid = auth.currentUser?.uid ?: throw Exception("User not logged in")
-            val snapshot = firestore.collection("users").document(uid).get().await()
+            val snapshot = firestore.collection(FirestoreKeys.USERS).document(uid).get().await()
             val userProfile = UserProfile(
-                name = snapshot.getString("name") ?: "",
-                surname = snapshot.getString("surname") ?: "",
-                phone = snapshot.getString("phone") ?: "",
-                email = snapshot.getString("email") ?: "",
-                password = snapshot.getString("password") ?: ""
+                name = snapshot.getString(FirestoreKeys.NAME) ?: "",
+                surname = snapshot.getString(FirestoreKeys.SURNAME) ?: "",
+                phone = snapshot.getString(FirestoreKeys.PHONE) ?: "",
+                email = snapshot.getString(FirestoreKeys.EMAIL) ?: "",
+                password = snapshot.getString(FirestoreKeys.PASSWORD) ?: ""
             )
             emit(Resource.Success(userProfile))
         } catch (e: Exception) {

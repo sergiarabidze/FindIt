@@ -10,4 +10,10 @@
         <item name="windowSplashScreenAnimationDuration">50000</item>
         <item name="postSplashScreenTheme">@style/Theme.App</item>
     </style>
+
+    <style name="RoundImageShape" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

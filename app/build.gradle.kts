@@ -8,6 +8,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -74,7 +75,9 @@ dependencies {
     implementation(libs.libphonenumber)
     implementation (libs.firebase.firestore.ktx)
     implementation(libs.androidx.datastore.preferences)
-
+    implementation (libs.play.services.maps)
+    implementation (libs.play.services.location)
+    implementation (libs.android.maps.utils)
 }
 kapt {
     correctErrorTypes = true

@@ -6,13 +6,15 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.findit.data.mapper.toDomain
+import com.example.findit.domain.model.LocationModel
 import com.example.findit.domain.model.PostDomain
 import com.example.findit.domain.resource.Resource
 import com.example.findit.domain.usecase.GetCurrentUserIdUseCase
 import com.example.findit.domain.usecase.UploadPostPhotoUseCase
 import com.example.findit.domain.usecase.UploadPostUseCase
 import com.example.findit.domain.model.PostType
+import com.example.findit.domain.usecase.GetProfileUseCase
+import com.example.findit.domain.usecase.GetUserNameUseCase
 import com.google.firebase.firestore.GeoPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -32,7 +34,9 @@ class AddPostViewModel @Inject constructor(
     @ApplicationContext private val  context: Context,
     private val uploadPostPhotoUseCase: UploadPostPhotoUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
-    private val uploadPostUseCase: UploadPostUseCase
+    private val uploadPostUseCase: UploadPostUseCase,
+    private val getUserNameUseCase: GetUserNameUseCase
+    
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(AddPostState())
@@ -106,15 +110,21 @@ class AddPostViewModel @Inject constructor(
                         _state.value = _state.value.copy(isLoading = resource.isLoading)
                     }
                     is Resource.Success ->{
-                        val currentUser = getCurrentUserIdUseCase()
+
+                        val currentUser = getCurrentUserIdUseCase() ?: ""
+
+                        val fullName = getUserNameUseCase(currentUser)
+
                         val post = PostDomain(
                             imageUrl = resource.data,
                             description = description,
-                            userId = currentUser ?: "",
-                            location = geoPoint.toDomain(),
+                            userId = currentUser,
+                            location = LocationModel(longitude = geoPoint.longitude, latitude = geoPoint.latitude),
                             timestamp = System.currentTimeMillis(),
-                            postType = type
+                            postType = type,
+                            userFullName = fullName
                         )
+
                         uploadPostUseCase(post).collectLatest{
                             when(it){
                                 is Resource.Error ->{

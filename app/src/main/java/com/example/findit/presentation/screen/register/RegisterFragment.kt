@@ -144,7 +144,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         val startIndex = fullText.indexOf(targetText)
         val endIndex = startIndex + targetText.length
 
-        if (startIndex == -1) return // prevent crash if the text isn't found
+        if (startIndex == -1) return
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -154,7 +154,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
-                ds.color = Color.parseColor("#0077CC")//male sheicvleba jigari
+                ds.color = R.color.holo_blue_dark
             }
         }
 

@@ -1,14 +1,23 @@
 package com.example.findit.domain.model
 
 enum class PostType {
-    FOUND{
+    FOUND {
         override fun toString(): String {
-            return "found"
+            return "FOUND"
         }
     },
-    LOST{
+    LOST {
         override fun toString(): String {
-            return "lost"
+            return "LOST"
+        }
+    };
+
+    companion object {
+        fun fromString(value: String): PostType {
+            return when (value.uppercase()) {
+                "FOUND" -> FOUND
+                else -> LOST
+            }
         }
     }
 }

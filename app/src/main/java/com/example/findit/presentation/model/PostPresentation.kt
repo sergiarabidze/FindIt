@@ -9,7 +9,8 @@ data class PostPresentation(
     val imageUrl: String = "",
     val description: String = "",
     val userId: String = "",
-    val timestamp: Long = 0,
+    val timestamp: String = "0",
     val location: GeoPoint = GeoPoint(0.0, 0.0),
-    val postType: PostType = PostType.LOST
+    val postType: PostType = PostType.LOST,
+    val userFullName : String = ""
 )

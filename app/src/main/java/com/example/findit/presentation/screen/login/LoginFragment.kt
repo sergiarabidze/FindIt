@@ -110,7 +110,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
-                ds.color = Color.parseColor("#0077CC")
+                ds.color = R.color.holo_blue_dark
             }
         }
 

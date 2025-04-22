@@ -4,6 +4,7 @@ import com.example.findit.data.dto.PostDto
 import com.example.findit.data.util.FirestoreKeys
 import com.example.findit.domain.model.LocationModel
 import com.example.findit.domain.model.PostDomain
+import com.example.findit.domain.model.PostType
 import com.google.firebase.firestore.GeoPoint
 
 fun PostDto.toDomain(): PostDomain {
@@ -14,7 +15,8 @@ fun PostDto.toDomain(): PostDomain {
         userId = userId,
         timestamp = timestamp,
         location = location.toDomain(),
-        postType = postType
+        postType = postType,
+        userFullName = userFullName
     )
 }
 
@@ -33,10 +35,12 @@ fun PostDomain.toDto(): PostDto {
         userId = userId,
         timestamp = timestamp,
         location = GeoPoint(location.latitude, location.longitude),
-        postType = postType
+        postType = postType,
+        userFullName = userFullName
     )
 }
-fun PostDomain.toFirestoreMap(): Map<String, Any> {
+
+fun PostDto.toFirestoreMap(): Map<String, Any> {
     return mapOf(
         FirestoreKeys.POST_ID to postId,
         FirestoreKeys.IMAGE_URL to imageUrl,
@@ -47,6 +51,23 @@ fun PostDomain.toFirestoreMap(): Map<String, Any> {
             FirestoreKeys.LATITUDE to location.latitude,
             FirestoreKeys.LONGITUDE to location.longitude
         ),
-        FirestoreKeys.POST_TYPE to postType.toString()
+        FirestoreKeys.POST_TYPE to postType.toString(),
+        FirestoreKeys.USER_FULL_NAME to userFullName
+    )
+}
+
+fun Map<String, Any>.fromFirestoreMap(): PostDto {
+    return PostDto(
+        postId = this["postId"] as String,
+        imageUrl = this["imageUrl"] as String,
+        description = this["description"] as String,
+        userId = this["userId"] as String,
+        timestamp = this["timestamp"] as Long,
+        location = GeoPoint(
+            (this["location"] as Map<String, Any>)["latitude"] as Double,
+            (this["location"] as Map<String, Any>)["longitude"] as Double
+        ),
+        postType = PostType.fromString(this["postType"] as String),
+        userFullName = this["userFullName"] as String
     )
 }

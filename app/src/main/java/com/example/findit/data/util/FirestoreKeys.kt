@@ -11,4 +11,11 @@ object FirestoreKeys {
     const val LATITUDE = "latitude"
     const val LONGITUDE = "longitude"
     const val POST_TYPE = "postType"
+    const val USER_FULL_NAME = "userFullName"
+    const val USERS = "users"
+    const val NAME = "name"
+    const val SURNAME = "surname"
+    const val PHONE = "phone"
+    const val EMAIL = "email"
+    const val PASSWORD = "password"
 }

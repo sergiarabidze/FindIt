@@ -35,4 +35,10 @@
     <string name="image" translatable="false">image/*</string>
     <string name="lost">Lost</string>
     <string name="found">Found</string>
+    <string name="posted_by">Posted by: %1$s</string>
+    <string name="contact">Contact</string>
+    <string name="view_location">View location</string>
+    <string name="tel">tel:%1$s</string>
+    <string name="fullname">%1$s %2$s</string>
+    <string name="no_posts_found">No posts found</string>
 </resources>
