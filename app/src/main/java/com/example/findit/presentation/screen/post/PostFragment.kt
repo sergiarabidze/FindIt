@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log.d
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.findit.R
 import com.example.findit.databinding.FragmentPostBinding
@@ -34,6 +35,9 @@ class PostFragment : BaseFragment<FragmentPostBinding>(FragmentPostBinding::infl
                 }
                 startActivity(intent)
             }
+            btnViewLocation.setOnClickListener {
+                viewModel.onEvent(PostEvent.ViewLocation)
+            }
         }
     }
 
@@ -62,5 +66,18 @@ class PostFragment : BaseFragment<FragmentPostBinding>(FragmentPostBinding::infl
                 }
             }
         }
+        launchCoroutine {
+            viewModel.effect.collectLatest { effect ->
+                when (effect) {
+                    is PostEffect.NavigateToViewLocation -> navigateToMap()
+                }
+            }
+        }
+    }
+
+    private fun navigateToMap(){
+        val postId = args.postId
+        val action = PostFragmentDirections.actionPostFragmentToViewLocationFragment2(postId)
+        findNavController().navigate(action)
     }
 }

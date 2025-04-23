@@ -47,10 +47,7 @@ fun PostDto.toFirestoreMap(): Map<String, Any> {
         FirestoreKeys.DESCRIPTION to description,
         FirestoreKeys.USER_ID to userId,
         FirestoreKeys.TIMESTAMP to timestamp,
-        FirestoreKeys.LOCATION to mapOf(
-            FirestoreKeys.LATITUDE to location.latitude,
-            FirestoreKeys.LONGITUDE to location.longitude
-        ),
+        FirestoreKeys.LOCATION to GeoPoint(location.latitude, location.longitude),
         FirestoreKeys.POST_TYPE to postType.toString(),
         FirestoreKeys.USER_FULL_NAME to userFullName
     )
@@ -63,11 +60,9 @@ fun Map<String, Any>.fromFirestoreMap(): PostDto {
         description = this["description"] as String,
         userId = this["userId"] as String,
         timestamp = this["timestamp"] as Long,
-        location = GeoPoint(
-            (this["location"] as Map<String, Any>)["latitude"] as Double,
-            (this["location"] as Map<String, Any>)["longitude"] as Double
-        ),
+        location = this["location"] as GeoPoint,
         postType = PostType.fromString(this["postType"] as String),
         userFullName = this["userFullName"] as String
     )
 }
+

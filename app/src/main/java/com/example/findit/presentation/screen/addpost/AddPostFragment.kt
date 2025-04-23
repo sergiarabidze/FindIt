@@ -9,14 +9,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.findit.R
 import com.example.findit.databinding.FragmentAddPostBinding
+import com.example.findit.domain.model.PostType
 import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.launchCoroutine
 import com.example.findit.presentation.extension.showSnackBar
-import com.example.findit.presentation.screen.add_image_dialog.ImageOptionDialog
 import com.example.findit.presentation.model.ImagePickOption
-import com.example.findit.domain.model.PostType
+import com.example.findit.presentation.screen.add_image_dialog.ImageOptionDialog
+import com.example.findit.presentation.screen.mark.MarkFragment
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.GeoPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
@@ -64,6 +65,16 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                 null -> {}
             }
         }
+        parentFragmentManager.setFragmentResultListener(
+            MarkFragment.REQUEST_KEY,
+            viewLifecycleOwner
+        ){
+            _,result ->
+            val location = result.getParcelable<LatLng>(MarkFragment.SELECTED_LOCATION_KEY)
+            location?.let {
+                viewModel.onEvent(AddPostEvent.AddLocation(it))
+            }
+        }
     }
 
     override fun setListeners() {
@@ -73,7 +84,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
             }
 
             addLocationId.setOnClickListener {
-                viewModel.onEvent(AddPostEvent.AddLocation(GeoPoint(0.0,0.0)))
+                navigateToMap()
             }
 
             addPostId.setOnClickListener {
@@ -95,6 +106,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                 }
             }
         }
+
         launchCoroutine {
             viewModel.event.collectLatest{event->
                 when(event){
@@ -146,7 +158,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                 R.id.lost_radio -> PostType.LOST
                 else -> PostType.FOUND
             }
-            viewModel.onEvent(AddPostEvent.AddPost(type = postType, desc, geoPoint = GeoPoint(0.0,0.0)))
+            viewModel.onEvent(AddPostEvent.AddPost(type = postType, desc, latLng = LatLng(0.0,0.0)))
         }
     }
 
@@ -159,6 +171,10 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
         requireActivity()
             .findViewById<BottomNavigationView>(R.id.bottomNavView)
             .selectedItemId = R.id.homeFragment
+    }
+    private fun navigateToMap(){
+        val action = AddPostFragmentDirections.actionAddPostFragmentToMarkFragment()
+        findNavController().navigate(action)
     }
 
 }

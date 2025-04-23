@@ -47,6 +47,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_addPostFragment_to_markFragment"
+            app:destination="@id/markFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -103,5 +106,20 @@
         <argument
             android:name="postId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_postFragment_to_viewLocationFragment2"
+            app:destination="@id/viewLocationFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/viewLocationFragment"
+        android:name="com.example.findit.presentation.screen.view_location.ViewLocationFragment"
+        android:label="ViewLocationFragment" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/markFragment"
+        android:name="com.example.findit.presentation.screen.mark.MarkFragment"
+        android:label="MarkFragment" />
 </navigation>
