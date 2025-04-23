@@ -1,6 +1,6 @@
-package com.example.findit.domain.model
+package com.example.findit.presentation.model
 
-data class UserProfile(
+data class UserProfilePresentation(
     val name: String,
     val surname: String,
     val phone: String,

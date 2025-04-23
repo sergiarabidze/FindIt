@@ -70,6 +70,9 @@
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -91,7 +94,11 @@
         android:id="@+id/editProfileFragment"
         android:name="com.example.findit.presentation.screen.editprofile.EditProfileFragment"
         android:label="fragment_edit_profile"
-        tools:layout="@layout/fragment_edit_profile" />
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_imageOptionDialog"
+            app:destination="@id/imageOptionDialog" />
+    </fragment>
     <dialog
         android:id="@+id/imageOptionDialog"
         android:name="com.example.findit.presentation.screen.add_image_dialog.ImageOptionDialog"

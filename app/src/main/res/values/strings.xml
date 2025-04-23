@@ -41,4 +41,6 @@
     <string name="tel">tel:%1$s</string>
     <string name="fullname">%1$s %2$s</string>
     <string name="no_posts_found">No posts found</string>
+    <string name="save">Save</string>
+    <string name="phone">Phone</string>
 </resources>

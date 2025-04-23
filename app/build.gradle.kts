@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.common)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.storage.ktx)
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.retrofit)

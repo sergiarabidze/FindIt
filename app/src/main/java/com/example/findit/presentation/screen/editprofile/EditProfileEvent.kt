@@ -1,11 +1,11 @@
 package com.example.findit.presentation.screen.editprofile
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+
 sealed interface EditProfileEvent {
     data object LoadProfile : EditProfileEvent
-    data class OnNameChanged(val value: String) : EditProfileEvent
-    data class OnSurnameChanged(val value: String) : EditProfileEvent
-    data class OnPhoneChanged(val value: String) : EditProfileEvent
-    data class OnEmailChanged(val value: String) : EditProfileEvent
-    data class OnPasswordChanged(val value: String) : EditProfileEvent
     data object OnSaveClicked : EditProfileEvent
+    data class OnProfileImageUriSelected(val context: Context, val uri: Uri) : EditProfileEvent
 }

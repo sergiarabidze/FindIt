@@ -22,6 +22,7 @@ object UseCaseModule {
         return RegisterValidationUseCase()
     }
 
+
     @Provides
     fun provideSetAppLanguageUseCase(
         impl: SetAppLanguageUseCaseImpl

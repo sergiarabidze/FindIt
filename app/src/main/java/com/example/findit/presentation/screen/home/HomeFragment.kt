@@ -1,6 +1,5 @@
 package com.example.findit.presentation.screen.home
 
-import android.util.Log.d
 import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels

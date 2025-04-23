@@ -1,10 +1,10 @@
 package com.example.findit.presentation.screen.editprofile
 
+import android.graphics.Bitmap
+import com.example.findit.presentation.model.UserProfilePresentation
+
 data class EditProfileState(
-    val name: String = "",
-    val surname: String = "",
-    val phone: String = "",
-    val email: String = "",
-    val password: String = "",
-    val isLoading: Boolean = false
+    val userProfile : UserProfilePresentation? = null,
+    val isLoading: Boolean = false,
+    val profileBitmap: Bitmap? = null
 )

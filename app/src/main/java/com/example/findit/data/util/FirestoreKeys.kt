@@ -4,6 +4,7 @@ object FirestoreKeys {
     const val POSTS = "posts"
     const val POST_ID = "postId"
     const val IMAGE_URL = "imageUrl"
+    const val PROFILE_IMAGE = "profileImage"
     const val DESCRIPTION = "description"
     const val USER_ID = "userId"
     const val TIMESTAMP = "timestamp"

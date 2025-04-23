@@ -90,7 +90,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                     photoId.setImageBitmap(state.bitmap)
                     photoId.isGone = state.bitmap == null
                     state.error?.let {
-                        root.showSnackBar("raghacas urev")
+                        root.showSnackBar(it)
                     }
                 }
             }

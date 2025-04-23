@@ -1,8 +1,11 @@
 package com.example.findit.data.repository
 
+import com.example.findit.data.request.ApiHelper
+import com.example.findit.data.util.FirestoreKeys
 import com.example.findit.domain.model.UserProfile
 import com.example.findit.domain.repository.UpdateUserProfileRepository
 import com.example.findit.domain.resource.Resource
+import com.example.findit.domain.resource.mapResourceData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
@@ -12,24 +15,26 @@ import javax.inject.Inject
 
 class UpdateUserProfileRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val apiHelper : ApiHelper
 ) : UpdateUserProfileRepository {
 
-    override suspend fun updateUserProfile(profile: UserProfile): Flow<Resource<Boolean>> = flow {
-        emit(Resource.Loader(true))
-        try {
-            val uid = auth.currentUser?.uid ?: throw Exception("User not logged in")
-            val profileMap = hashMapOf(
-                "name" to profile.name,
-                "surname" to profile.surname,
-                "phone" to profile.phone,
-                "email" to profile.email,
-                "password" to profile.password
-            )
-            firestore.collection("users").document(uid).update(profileMap as Map<String, Any>).await()
-            emit(Resource.Success(true))
-        } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Update failed"))
+    override suspend fun updateUserProfile(profile: UserProfile): Flow<Resource<Boolean>> {
+        val uid = auth.currentUser?.uid ?: return flow {
+            emit(Resource.Error("User not logged in"))
+        }
+        val profileMap = mapOf(
+            FirestoreKeys.NAME to profile.name,
+            FirestoreKeys.SURNAME to profile.surname,
+            FirestoreKeys.PHONE to profile.phone,
+            FirestoreKeys.EMAIL to profile.email,
+            FirestoreKeys.PASSWORD to profile.password
+        )
+        return apiHelper.safeFireBaseCall {
+            firestore.collection("users").document(uid).update(profileMap)
+        }.mapResourceData {
+            true
         }
     }
+
 }
