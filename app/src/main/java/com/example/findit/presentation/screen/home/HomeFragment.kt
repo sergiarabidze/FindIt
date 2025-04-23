@@ -1,5 +1,6 @@
 package com.example.findit.presentation.screen.home
 
+import android.util.Log.d
 import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
@@ -18,6 +19,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val adapter : PostAdapter by lazy {
         PostAdapter{
+            d("homescreen",it)
             viewModel.onEvent(HomeScreenEvent.OnPostClicked(it))
         }
     }
@@ -66,6 +68,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun openPost(postId : String){
+        d("homescreen",postId)
         val action = HomeFragmentDirections.actionHomeFragmentToPostFragment(postId)
         findNavController().navigate(action)
     }

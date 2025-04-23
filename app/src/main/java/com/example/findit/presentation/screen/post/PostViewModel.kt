@@ -7,7 +7,9 @@ import com.example.findit.domain.usecase.GetPostByIdUseCase
 import com.example.findit.domain.usecase.GetProfileUseCase
 import com.example.findit.presentation.mappper.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,11 +21,18 @@ class PostViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(PostState())
     val state = _state.asStateFlow()
+    private val _effect = MutableSharedFlow<PostEffect>()
+    val effect = _effect.asSharedFlow()
 
     fun onEvent(event: PostEvent) {
         when (event) {
             is PostEvent.LoadPost -> loadPost(event.postId)
-            PostEvent.ClearError -> clearError()
+            is PostEvent.ClearError -> clearError()
+            is PostEvent.ViewLocation -> {
+                viewModelScope.launch {
+                    _effect.emit(PostEffect.NavigateToViewLocation)
+                }
+            }
         }
     }
 
@@ -42,7 +51,7 @@ class PostViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         _state.value = _state.value.copy(post = result.data.toPresentation(), isLoading = false)
-                        getUserProfileUseCase.invoke().collect { userResult ->
+                        getUserProfileUseCase.invoke(result.data.userId).collect { userResult ->
                             when (userResult) {
                                 is Resource.Error -> {
                                     _state.value =

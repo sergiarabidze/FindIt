@@ -3,6 +3,8 @@ package com.example.findit.presentation.screen.addpost
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +17,7 @@ import com.example.findit.domain.usecase.UploadPostUseCase
 import com.example.findit.domain.model.PostType
 import com.example.findit.domain.usecase.GetProfileUseCase
 import com.example.findit.domain.usecase.GetUserNameUseCase
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.GeoPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -48,12 +51,13 @@ class AddPostViewModel @Inject constructor(
     fun onEvent(event: AddPostEvent) {
         when(event) {
             is AddPostEvent.AddLocation -> {
+                _state.value = _state.value.copy(location = event.latLng)
             }
             is AddPostEvent.OpenDialog ->{
                 handleOpenDialog()
             }
             is AddPostEvent.AddPost ->{
-                addPost(event.type,event.description,event.geoPoint)
+                addPost(event.type,event.description)
             }
             is AddPostEvent.ClearError -> {
                 clearError()
@@ -66,41 +70,52 @@ class AddPostViewModel @Inject constructor(
     }
 
     private fun compressImage(context: Context, uri: Uri) {
-
         viewModelScope.launch(Dispatchers.IO) {
-
             try {
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val originalBytes = inputStream?.readBytes() ?: throw IOException("Failed to read image")
+                inputStream.close()
 
-                context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    val options = BitmapFactory.Options().apply {
-                        inSampleSize = 2
-                        inJustDecodeBounds = false
-                    }
-
-                    val originalBitmap = BitmapFactory.decodeStream(inputStream, null, options)
-                        ?: throw IOException("Failed to decode bitmap")
-
-                    val outputStream = ByteArrayOutputStream().apply {
-                        if (!originalBitmap.compress(Bitmap.CompressFormat.JPEG, 80, this)) {
-                            throw IOException("Failed to compress bitmap")
-                        }
-                    }
-
-                    val compressedBitmap = BitmapFactory.decodeByteArray(
-                        outputStream.toByteArray(),
-                        0,
-                        outputStream.size()
-                    )
-                    _state.value = _state.value.copy(bitmap = compressedBitmap)
+                val bitmap = BitmapFactory.decodeByteArray(originalBytes, 0, originalBytes.size)
+                    ?: throw IOException("Failed to decode bitmap")
+                val exif = ExifInterface(originalBytes.inputStream())
+                val rotationDegrees = when (exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
+                )) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                    ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                    ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                    else -> 0f
                 }
+
+                val rotatedBitmap = if (rotationDegrees != 0f) {
+                    val matrix = Matrix().apply { postRotate(rotationDegrees) }
+                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                } else bitmap
+
+                val outputStream = ByteArrayOutputStream()
+                if (!rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)) {
+                    throw IOException("Failed to compress bitmap")
+                }
+
+                val finalBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size())
+                _state.value = _state.value.copy(bitmap = finalBitmap)
+
             } catch (e: Exception) {
                 _state.value = _state.value.copy(btnEnabled = false, error = e.localizedMessage)
             }
         }
     }
 
-    private fun addPost(type : PostType, description: String, geoPoint: GeoPoint){
+
+
+    private fun addPost(type : PostType, description: String){
         viewModelScope.launch {
+            val latLng = state.value.location
+            if(latLng==null){
+                _state.value = _state.value.copy(error = "you must specify location")
+                return@launch
+            }
             state.value.bitmap?.let { uploadPostPhotoUseCase(it) }?.collectLatest { resource ->
                 when(resource){
                     is Resource.Error -> {
@@ -115,11 +130,13 @@ class AddPostViewModel @Inject constructor(
 
                         val fullName = getUserNameUseCase(currentUser)
 
+
+
                         val post = PostDomain(
                             imageUrl = resource.data,
                             description = description,
                             userId = currentUser,
-                            location = LocationModel(longitude = geoPoint.longitude, latitude = geoPoint.latitude),
+                            location = LocationModel(longitude = latLng.longitude, latitude = latLng.latitude),
                             timestamp = System.currentTimeMillis(),
                             postType = type,
                             userFullName = fullName

@@ -5,5 +5,5 @@ import com.example.findit.domain.resource.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface GetUserProfileRepository {
-    suspend fun getUserProfile(): Flow<Resource<UserProfile>>
+    suspend fun getUserProfile(userid:String): Flow<Resource<UserProfile>>
 }

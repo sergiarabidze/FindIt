@@ -3,11 +3,14 @@ package com.example.findit.presentation.screen.editprofile
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.domain.model.UserProfile
 import com.example.findit.domain.resource.Resource
+import com.example.findit.domain.usecase.GetCurrentUserIdUseCase
 import com.example.findit.domain.usecase.GetProfileUseCase
 import com.example.findit.domain.usecase.UpdateProfileImageUrlUseCase
 import com.example.findit.domain.usecase.UpdateProfileUseCase
@@ -23,10 +26,11 @@ import java.io.IOException
 import javax.inject.Inject
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
-    private val getProfileUseCase: GetProfileUseCase,
+    private val getProfileUseCase : GetProfileUseCase,
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val uploadProfilePhotoUseCase: UploadProfilePhotoUseCase,
-    private val updateProfileImageUrlUseCase: UpdateProfileImageUrlUseCase
+    private val updateProfileImageUrlUseCase: UpdateProfileImageUrlUseCase,
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditProfileState())
@@ -49,7 +53,9 @@ class EditProfileViewModel @Inject constructor(
 
     private fun loadProfile() {
         viewModelScope.launch {
-            getProfileUseCase().collect { result ->
+            val userId = getCurrentUserIdUseCase() ?: return@launch
+
+            getProfileUseCase(userId).collect { result ->
                 when (result) {
                     is Resource.Loader -> _state.update { it.copy(isLoading = result.isLoading) }
                     is Resource.Success -> {
@@ -83,36 +89,45 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
+
     private fun compressImage(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                context.contentResolver.openInputStream(uri)?.use { inputStream ->
-                    val options = BitmapFactory.Options().apply {
-                        inSampleSize = 2
-                        inJustDecodeBounds = false
-                    }
+                val inputStream = context.contentResolver.openInputStream(uri)
+                val originalBytes = inputStream?.readBytes() ?: throw IOException("Failed to read image")
+                inputStream.close()
 
-                    val originalBitmap = BitmapFactory.decodeStream(inputStream, null, options)
-                        ?: throw IOException("Failed to decode bitmap")
-
-                    val outputStream = ByteArrayOutputStream().apply {
-                        if (!originalBitmap.compress(Bitmap.CompressFormat.JPEG, 80, this)) {
-                            throw IOException("Failed to compress bitmap")
-                        }
-                    }
-
-                    val compressedBitmap = BitmapFactory.decodeByteArray(
-                        outputStream.toByteArray(),
-                        0,
-                        outputStream.size()
-                    )
-
-                    _state.update { it.copy(profileBitmap = compressedBitmap) }
-                    uploadProfileImage(compressedBitmap)
+                val bitmap = BitmapFactory.decodeByteArray(originalBytes, 0, originalBytes.size)
+                    ?: throw IOException("Failed to decode bitmap")
+                val exif = ExifInterface(originalBytes.inputStream())
+                val rotationDegrees = when (exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL
+                )) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                    ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                    ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                    else -> 0f
                 }
+
+                val rotatedBitmap = if (rotationDegrees != 0f) {
+                    val matrix = Matrix().apply { postRotate(rotationDegrees) }
+                    Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                } else bitmap
+
+                val outputStream = ByteArrayOutputStream()
+                if (!rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)) {
+                    throw IOException("Failed to compress bitmap")
+                }
+
+                val finalBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size())
+                _state.value = _state.value.copy(profileBitmap = finalBitmap)
+                uploadProfileImage(finalBitmap)
+
+
             } catch (e: Exception) {
-                _state.update { it.copy(isLoading = false) }
+                _state.value = _state.value.copy(isLoading = false)
                 _effect.emit(EditProfileEffect.ShowError(e.localizedMessage ?: "Image compression failed"))
+
             }
         }
     }

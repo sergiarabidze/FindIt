@@ -2,8 +2,6 @@ package com.example.findit.di
 
 import com.example.findit.domain.usecase.GetAppLanguageUseCase
 import com.example.findit.domain.usecase.GetAppLanguageUseCaseImpl
-import com.example.findit.domain.usecase.GetProfileUseCase
-import com.example.findit.domain.usecase.GetProfileUseCaseImpl
 import com.example.findit.domain.usecase.RegisterValidationUseCase
 import com.example.findit.domain.usecase.SetAppLanguageUseCase
 import com.example.findit.domain.usecase.SetAppLanguageUseCaseImpl
@@ -32,11 +30,6 @@ object UseCaseModule {
     fun provideGetAppLanguageUseCase(
         impl: GetAppLanguageUseCaseImpl
     ): GetAppLanguageUseCase = impl
-
-    @Provides
-    fun provideGetProfileUseCase(
-        impl : GetProfileUseCaseImpl
-    ): GetProfileUseCase = impl
 
     @Provides
     fun provideUpdateProfileUseCase(

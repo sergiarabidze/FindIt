@@ -2,7 +2,7 @@ package com.example.findit.presentation.mappper
 
 import com.example.findit.domain.model.PostDomain
 import com.example.findit.presentation.model.PostPresentation
-import com.google.firebase.firestore.GeoPoint
+import com.google.android.gms.maps.model.LatLng
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -14,7 +14,7 @@ fun PostDomain.toPresentation(): PostPresentation {
         description = description,
         userId = userId,
         timestamp = formatTimestamp(timestamp),
-        location = GeoPoint(location.latitude, location.longitude),
+        location = LatLng(location.latitude, location.longitude),
         postType = postType,
         userFullName = userFullName
     )

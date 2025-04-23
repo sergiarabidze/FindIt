@@ -16,8 +16,6 @@ import java.util.Locale
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
     private val viewModel: ProfileViewModel by viewModels()
 
-    override fun setUp() {}
-
     override fun setListeners() {
         binding.itemChangeLanguage.setOnClickListener {
             viewModel.onEvent(ProfileEvent.ChangeLanguageClicked)
