@@ -28,6 +28,7 @@ class MarkFragment : BaseMapFragment<FragmentMarkBinding>(FragmentMarkBinding::i
     private var selectedMarker: Marker? = null
 
     override fun onLocationSetupSuccess() {
+        super.onLocationSetupSuccess()
         fetchCurrentUser()
         initializeMap()
     }

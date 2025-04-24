@@ -64,7 +64,11 @@
         android:id="@+id/locationFragment"
         android:name="com.example.findit.presentation.screen.location.LocationFragment"
         android:label="fragment_location"
-        tools:layout="@layout/fragment_location" />
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_locationFragment_to_markerBottomSheet"
+            app:destination="@id/markerBottomSheet" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.findit.presentation.screen.profile.ProfileFragment"
@@ -129,4 +133,19 @@
         android:id="@+id/markFragment"
         android:name="com.example.findit.presentation.screen.mark.MarkFragment"
         android:label="MarkFragment" />
+    <dialog
+        android:id="@+id/markerBottomSheet"
+        android:name="com.example.findit.presentation.screen.marker.MarkerBottomSheet"
+        android:label="MarkerBottomSheet" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_markerBottomSheet_to_postFragment"
+            app:destination="@id/postFragment" />
+        <argument
+            android:name="userName"
+            app:argType="string" />
+        <argument android:name="description" />
+    </dialog>
 </navigation>

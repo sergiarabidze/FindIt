@@ -50,4 +50,5 @@
     <string name="item_location">Item Location</string>
     <string name="mark_location">Mark Location</string>
     <string name="login">Login</string>
+    <string name="view_post">View Post</string>
 </resources>

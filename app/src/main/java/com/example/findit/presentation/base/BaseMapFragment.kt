@@ -55,6 +55,7 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         }
     }
 
+
     private fun checkPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
@@ -78,12 +79,15 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         }
     }
 
-    abstract fun onLocationSetupSuccess()
+   open fun onLocationSetupSuccess() {
+       fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+   }
 
-    override fun setUp() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        setupLocation()
+    override fun onResume() {
+        super.onResume()
+        if (!::fusedLocationClient.isInitialized) {
+            setupLocation()
+        }
     }
-
-    }
+}
 

@@ -79,6 +79,7 @@ dependencies {
     implementation (libs.play.services.maps)
     implementation (libs.play.services.location)
     implementation (libs.android.maps.utils)
+    implementation (libs.google.android.maps.utils.v230)
 }
 kapt {
     correctErrorTypes = true
