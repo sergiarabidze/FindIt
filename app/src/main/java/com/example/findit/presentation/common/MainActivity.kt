@@ -37,28 +37,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        binding.bottomNavView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    navController.navigate(R.id.homeFragment)
-                    true
-                }
-                R.id.nav_addPost -> {
-                    navController.navigate(R.id.addPostFragment)
-                    true
-                }
+        binding.bottomNavView.setupWithNavController(navController)
 
-                R.id.nav_location -> {
-                    navController.navigate(R.id.locationFragment)
-                    true
-                }
-                R.id.nav_profile -> {
-                    navController.navigate(R.id.profileFragment)
-                    true
-                }
-                else -> false
-            }
-        }
 
     }
 }

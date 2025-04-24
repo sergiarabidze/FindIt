@@ -1,10 +1,18 @@
 package com.example.findit.presentation.screen.home
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log.d
+import android.view.View
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.findit.R
 import com.example.findit.databinding.FragmentHomeBinding
 import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.launchCoroutine
@@ -30,7 +38,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             searchEditText.doOnTextChanged { text, _, _, _ ->
                 viewModel.onEvent(HomeScreenEvent.OnSearchQueryChanged(text.toString()))
             }
+            filterIcon.setOnClickListener {
+                showFilterPopup(it)
+            }
         }
+
     }
 
     override fun setObservers() {
@@ -72,5 +84,53 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         val action = HomeFragmentDirections.actionHomeFragmentToPostFragment(postId)
         findNavController().navigate(action)
     }
+
+
+
+
+
+    private fun showFilterPopup(anchor: View) {
+        val popupView = layoutInflater.inflate(R.layout.filter_popup, null)
+        val popupWindow = PopupWindow(
+            popupView,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
+            elevation = 10f
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        }
+
+        popupView.measure(
+            View.MeasureSpec.UNSPECIFIED,
+            View.MeasureSpec.UNSPECIFIED
+        )
+        val popupWidth = popupView.measuredWidth
+
+        popupWindow.showAsDropDown(anchor, -popupWidth + anchor.width, 10)
+
+
+        val todayCheckBox = popupView.findViewById<CheckBox>(R.id.filter_today)
+        val weekCheckBox = popupView.findViewById<CheckBox>(R.id.filter_week)
+        val monthCheckBox = popupView.findViewById<CheckBox>(R.id.filter_month)
+        val lostCheckBox = popupView.findViewById<CheckBox>(R.id.filter_lost)
+        val foundCheckBox = popupView.findViewById<CheckBox>(R.id.filter_found)
+        val applyButton = popupView.findViewById<Button>(R.id.apply_filters_button)
+
+        applyButton.setOnClickListener {
+            val selected = mutableListOf<String>()
+            if (todayCheckBox.isChecked) selected.add("today")
+            if (weekCheckBox.isChecked) selected.add("week")
+            if (monthCheckBox.isChecked) selected.add("month")
+            if (lostCheckBox.isChecked) selected.add("lost")
+            if (foundCheckBox.isChecked) selected.add("found")
+
+//            // Next: send to ViewModel
+//            viewModel.onEvent(HomeScreenEvent.OnFiltersSelected(selected))
+
+            popupWindow.dismiss()
+        }
+    }
+
 
 }

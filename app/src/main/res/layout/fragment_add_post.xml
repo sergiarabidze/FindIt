@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/application_background"
     android:fillViewport="true">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         tools:context=".presentation.screen.addpost.AddPostFragment">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -42,6 +42,7 @@
                 android:text="@string/found"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                app:buttonTint="@color/black"
                 android:checked="true"/>
 
             <RadioButton
@@ -49,6 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
+                app:buttonTint = "@color/black"
                 android:text="@string/lost"
                 android:textSize="18sp" />
         </RadioGroup>
@@ -59,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="24dp"
-            android:background="@color/white"
+            android:background="@drawable/auth_edit_text"
             android:hint="@string/add_description"
             android:textColor="@color/black"
             android:padding="12dp"
@@ -80,26 +82,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/description_id" />
 
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_photo_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="50dp"
             android:layout_margin="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/button_solid"
             android:text="@string/add_image"
             android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_id" />
-
+            app:layout_constraintTop_toBottomOf="@+id/photo_id" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/add_location_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="50dp"
             android:layout_margin="12dp"
             android:text="@string/add_location"
             android:textAllCaps="false"
+            android:background="@drawable/button_solid"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -123,6 +130,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_marginBottom="48dp"
+            android:background="@drawable/button_solid"
+            android:textColor="@color/white"
             android:text="@string/add_post"
             android:textAllCaps="false"
             android:textSize="18sp"

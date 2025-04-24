@@ -1,5 +1,6 @@
 package com.example.findit.presentation.screen.login
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
@@ -40,6 +41,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun setObservers() {
         launchCoroutine {
             viewModel.loginEvent.collectLatest { event ->
@@ -59,11 +61,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 viewModel.loginState.collectLatest { state ->
                     binding.progressBar.isVisible = state.isLoading
                     binding.btnLogin.isEnabled = !state.isLoading
-                    if (!state.btnEnabled) {
-                        binding.btnLogin.setBackgroundColor(R.color.background_color)
-                    } else {
-                        binding.btnLogin.setBackgroundColor(R.color.ic_launcher_background)
-                    }
                     state.error?.let {
                         binding.root.showSnackBar(state.error)
                         viewModel.onEvent(LoginEvent.ClearError)

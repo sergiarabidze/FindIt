@@ -19,7 +19,7 @@ class PostAdapter(val onPostClicked : (String) -> Unit) : ListAdapter<PostPresen
         fun bind(post: PostPresentation) = with(binding) {
             tvPostType.text = post.postType.toString()
             tvDescription.text = post.description
-            tvUserId.text = binding.root.context.getString(R.string.posted_by, post.userFullName)
+            tvUserId.text = post.userFullName
             tvTimestamp.text = post.timestamp
             ivPostImage.loadImage(post.imageUrl, R.drawable.postdefault)
             root.setOnClickListener {

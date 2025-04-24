@@ -1,5 +1,6 @@
 package com.example.findit.presentation.screen.register
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
@@ -47,12 +48,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     progressBar.isVisible = state.isLoading
                     btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
                     btnSignUp.isClickable = !state.isLoading && state.btnEnabled
-
-                    if (!state.btnEnabled) {
-                        btnSignUp.setBackgroundColor(R.color.background_color)
-                    } else {
-                        btnSignUp.setBackgroundColor(R.color.ic_launcher_background)
-                    }
 
                     state.error?.let {
                         root.showSnackBar(state.error)
@@ -151,6 +146,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 viewModel.onEvent(RegisterEvent.NavigateToLoginScreen)
             }
 
+            @SuppressLint("ResourceAsColor")
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
