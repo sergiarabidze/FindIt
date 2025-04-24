@@ -30,7 +30,7 @@ class ViewLocationViewModel @Inject constructor(
                 _state.value = _state.value.copy(currentUserLocation = event.location)
             }
 
-            ViewLocationEvent.ClearError ->{
+            is ViewLocationEvent.ClearError ->{
                 clearError()
             }
         }
@@ -43,7 +43,6 @@ class ViewLocationViewModel @Inject constructor(
                     is Resource.Error -> {
                         _state.value = ViewLocationState(error = result.errorMessage, isLoading = false)
                     }
-
                     is Resource.Loader -> {
                         _state.value = ViewLocationState(isLoading = result.isLoading)
                     }

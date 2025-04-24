@@ -32,6 +32,7 @@ class ViewLocationFragment : BaseMapFragment<FragmentViewLocationBinding>(Fragme
     private lateinit var map: GoogleMap
 
     override fun onLocationSetupSuccess() {
+        super.onLocationSetupSuccess()
         fetchCurrentUser()
         initializeMap()
         viewModel.onEvent(ViewLocationEvent.GetPost(args.postId))
