@@ -26,7 +26,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         binding.buttonLogout.setOnClickListener {
             viewModel.onEvent(ProfileEvent.LogoutClicked)
         }
+        binding.itemChangeTheme.setOnClickListener {
 
+        }
+        binding.itemMyProfile.setOnClickListener {
+            viewModel.onEvent(ProfileEvent.MyProfileClicked)
+        }
     }
 
     override fun setObservers() {
@@ -36,10 +41,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                     is ProfileEffect.ChangeLanguage -> setLocale(effect.languageCode)
                     ProfileEffect.NavigateToChangeTheme -> TODO()
                     ProfileEffect.NavigateToEditProfile -> {
-                        findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+                        val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment()
+                        findNavController().navigate(action)
                     }
                     ProfileEffect.NavigateToLogin -> findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
-                    ProfileEffect.NavigateToMyProfile -> TODO()
+                    ProfileEffect.NavigateToMyProfile ->{
+                        val action = ProfileFragmentDirections.actionProfileFragmentToMyPostsFragment()
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }

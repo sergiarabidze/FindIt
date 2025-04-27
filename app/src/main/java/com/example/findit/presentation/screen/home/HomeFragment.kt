@@ -27,7 +27,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val adapter : PostAdapter by lazy {
         PostAdapter{
-            d("homescreen",it)
             viewModel.onEvent(HomeScreenEvent.OnPostClicked(it))
         }
     }
@@ -42,7 +41,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                 showFilterPopup(it)
             }
         }
-
     }
 
     override fun setObservers() {
@@ -52,11 +50,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                     if (state.posts.isNotEmpty()) {
                         adapter.submitList(state.posts)
                         postsRecyclerView.isGone = false
-                        noPostsFoundText.isGone = true
                     } else {
                         postsRecyclerView.isGone = true
-                        noPostsFoundText.isGone = false
                     }
+
+                    noPostsFoundText.isGone = state.posts.isNotEmpty() || state.isLoading
                     progressBar.isGone = !state.isLoading
                     state.error?.let {
                         root.showSnackBar(it)
@@ -80,7 +78,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     }
 
     private fun openPost(postId : String){
-        d("homescreen",postId)
         val action = HomeFragmentDirections.actionHomeFragmentToPostFragment(postId)
         findNavController().navigate(action)
     }

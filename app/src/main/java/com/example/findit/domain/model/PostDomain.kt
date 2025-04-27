@@ -2,7 +2,7 @@ package com.example.findit.domain.model
 
 import androidx.annotation.Keep
 
-@Keep
+//@Keep
 data class PostDomain(
     val postId: String = "",
     val imageUrl: String = "",

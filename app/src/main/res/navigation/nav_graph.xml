@@ -80,6 +80,9 @@
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_myPostsFragment"
+            app:destination="@id/myPostsFragment" />
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
@@ -151,6 +154,11 @@
             app:argType="string" />
         <argument android:name="description" />
     </dialog>
+    <fragment
+        android:id="@+id/myPostsFragment"
+        android:name="com.example.findit.presentation.screen.my_posts.MyPostsFragment"
+        android:label="fragment_my_posts"
+        tools:layout="@layout/fragment_my_posts" />
 
 
 

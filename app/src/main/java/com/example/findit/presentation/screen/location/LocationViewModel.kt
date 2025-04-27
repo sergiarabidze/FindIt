@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,7 +45,7 @@ class LocationViewModel @Inject constructor(
 
     private fun  getUserPosts(){
         viewModelScope.launch {
-            getUserPostsUseCase().collectLatest{ state ->
+            getUserPostsUseCase().collect{ state ->
                 when(state){
                     is Resource.Error ->{
                         _state.value = _state.value.copy(error = state.errorMessage)

@@ -11,6 +11,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
+import com.example.findit.R
+import com.example.findit.presentation.extension.showAlertDialog
 import com.example.findit.presentation.extension.showSnackBar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -45,6 +47,7 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         )
     }
 
+
     private fun isLocationEnabled(context: Context): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -57,11 +60,18 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
     }
 
     private fun promptForLocationSettings() {
-        if (!isLocationEnabled(requireContext())) {
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
-        }
+        requireContext().showAlertDialog(
+            title = getString(R.string.location_services_disabled),
+            message = getString(R.string.asking_for_location),
+            positiveButtonText = getString(R.string.enable),
+            negativeButtonText = getString(R.string.cancel),
+            positiveButtonClickAction = {
+                val locationSettingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(locationSettingsIntent)
+            }
+        )
     }
+
 
     private fun checkPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(
@@ -86,10 +96,9 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         }
     }
 
-    // Overridable method for location setup success
-    open fun onLocationSetupSuccess() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-    }
+   open fun onLocationSetupSuccess() {
+       fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+   }
 
     override fun onResume() {
         super.onResume()
@@ -98,3 +107,4 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         }
     }
 }
+

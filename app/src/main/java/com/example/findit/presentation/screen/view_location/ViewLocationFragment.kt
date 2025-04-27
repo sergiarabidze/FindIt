@@ -34,9 +34,12 @@ class ViewLocationFragment : BaseMapFragment<FragmentViewLocationBinding>(Fragme
     override fun onLocationSetupSuccess() {
         super.onLocationSetupSuccess()
         fetchCurrentUser()
+    }
+
+    override fun setUp() {
+        super.setUp()
         initializeMap()
         viewModel.onEvent(ViewLocationEvent.GetPost(args.postId))
-
     }
 
     private fun initializeMap() {
@@ -44,7 +47,7 @@ class ViewLocationFragment : BaseMapFragment<FragmentViewLocationBinding>(Fragme
         mapFragment?.getMapAsync(this)
     }
 
-    override fun setObservers() {
+     private fun observers() {
         launchCoroutine {
             viewModel.state.collect { state ->
                 if (::map.isInitialized && state.postLocation != null && state.currentUserLocation != null) {
@@ -100,12 +103,12 @@ class ViewLocationFragment : BaseMapFragment<FragmentViewLocationBinding>(Fragme
                 }
             }
         }
-
     }
 
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        observers()
     }
 
     private fun fetchCurrentUser() {

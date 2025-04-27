@@ -21,7 +21,6 @@ class PostFragment : BaseFragment<FragmentPostBinding>(FragmentPostBinding::infl
     private val args: PostFragmentArgs by navArgs()
 
     override fun setData() {
-        d("post", args.postId)
         val postId = args.postId
         viewModel.onEvent(PostEvent.LoadPost(postId))
     }

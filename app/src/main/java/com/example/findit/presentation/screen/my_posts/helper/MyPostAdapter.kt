@@ -1,4 +1,4 @@
-package com.example.findit.presentation.screen.home.helper
+package com.example.findit.presentation.screen.my_posts.helper
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,9 @@ import com.example.findit.databinding.PostItemBinding
 import com.example.findit.presentation.extension.loadImage
 import com.example.findit.presentation.model.PostPresentation
 
-class PostAdapter(val onPostClicked : (String) -> Unit) : ListAdapter<PostPresentation, PostAdapter.PostViewHolder>(DiffCallback()) {
+class MyPostAdapter(val onPostClicked : (String) -> Unit) : ListAdapter<PostPresentation, MyPostAdapter.PostViewHolder>(
+    DiffCallback()
+) {
 
     inner class PostViewHolder(private val binding: PostItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -21,8 +23,9 @@ class PostAdapter(val onPostClicked : (String) -> Unit) : ListAdapter<PostPresen
             tvUserId.text = post.userFullName
             tvTimestamp.text = post.timestamp
             ivPostImage.loadImage(post.imageUrl, R.drawable.postdefault)
-            root.setOnClickListener {
+            root.setOnLongClickListener{
                 onPostClicked(post.postId)
+                true
             }
         }
     }
@@ -36,7 +39,7 @@ class PostAdapter(val onPostClicked : (String) -> Unit) : ListAdapter<PostPresen
         holder.bind(getItem(position))
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<PostPresentation>() {
+     class DiffCallback : DiffUtil.ItemCallback<PostPresentation>() {
         override fun areItemsTheSame(oldItem: PostPresentation, newItem: PostPresentation): Boolean {
             return oldItem.postId == newItem.postId
         }

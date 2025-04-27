@@ -1,6 +1,5 @@
 package com.example.findit.data.repository
 
-import android.util.Log.d
 import com.example.findit.data.mapper.fromFirestoreMap
 import com.example.findit.data.mapper.toDomain
 import com.example.findit.data.request.ApiHelper
@@ -50,4 +49,25 @@ class PostsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPostsByUserID(userId: String): Flow<Resource<List<PostDomain>>> {
+        return apiHelper.safeFireBaseCall {
+            firestore.collection(FirestoreKeys.POSTS)
+                .whereEqualTo(FirestoreKeys.USER_ID, userId)
+                .get()
+        }.mapResourceData { result ->
+            result.documents.mapNotNull { doc ->
+                runCatching { doc.data?.fromFirestoreMap()?.toDomain() }.getOrNull()
+            }
+        }
+    }
+
+    override suspend fun deletePost(postId: String): Flow<Resource<Boolean>> {
+        return apiHelper.safeFireBaseCall {
+            firestore.collection(FirestoreKeys.POSTS)
+                .document(postId)
+                .delete()
+        }.mapResourceData {
+            true
+        }
+    }
 }

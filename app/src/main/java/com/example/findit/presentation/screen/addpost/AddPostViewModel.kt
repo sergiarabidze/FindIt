@@ -10,15 +10,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.domain.model.LocationModel
 import com.example.findit.domain.model.PostDomain
+import com.example.findit.domain.model.PostType
 import com.example.findit.domain.resource.Resource
 import com.example.findit.domain.usecase.GetCurrentUserIdUseCase
+import com.example.findit.domain.usecase.GetUserNameUseCase
 import com.example.findit.domain.usecase.UploadPostPhotoUseCase
 import com.example.findit.domain.usecase.UploadPostUseCase
-import com.example.findit.domain.model.PostType
-import com.example.findit.domain.usecase.GetProfileUseCase
-import com.example.findit.domain.usecase.GetUserNameUseCase
-import com.google.android.gms.maps.model.LatLng
-import com.google.firebase.firestore.GeoPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +49,9 @@ class AddPostViewModel @Inject constructor(
         when(event) {
             is AddPostEvent.AddLocation -> {
                 _state.value = _state.value.copy(location = event.latLng)
+                viewModelScope.launch {
+                    _event.emit(AddPostUiEvent.LocationAdded)
+                }
             }
             is AddPostEvent.OpenDialog ->{
                 handleOpenDialog()
@@ -66,6 +66,13 @@ class AddPostViewModel @Inject constructor(
             is AddPostEvent.ImageSelected ->{
                 compressImage(context ,event.uri)
             }
+
+            is AddPostEvent.OpenMap ->{
+                viewModelScope.launch {
+                    _event.emit(AddPostUiEvent.OpenLocation)
+                }
+            }
+
         }
     }
 
@@ -130,8 +137,6 @@ class AddPostViewModel @Inject constructor(
 
                         val fullName = getUserNameUseCase(currentUser)
 
-
-
                         val post = PostDomain(
                             imageUrl = resource.data,
                             description = description,
@@ -157,9 +162,7 @@ class AddPostViewModel @Inject constructor(
                         }
                     }
                 }
-
             }
-
         }
     }
 
