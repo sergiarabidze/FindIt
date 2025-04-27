@@ -5,5 +5,6 @@ import com.example.findit.presentation.model.PostPresentation
 data class HomeScreenUiState(
     val posts: List<PostPresentation> = emptyList(),
     val isLoading: Boolean = false,
+    val selectedFilters: List<String> = emptyList(),
     val error: String? = null
 )

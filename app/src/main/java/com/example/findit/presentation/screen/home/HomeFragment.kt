@@ -90,47 +90,44 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
 
     private fun showFilterPopup(anchor: View) {
+        // Inflate the filter popup view and create the PopupWindow
         val popupView = layoutInflater.inflate(R.layout.filter_popup, null)
-        val popupWindow = PopupWindow(
-            popupView,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            true
-        ).apply {
+        val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true).apply {
             elevation = 10f
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
-        popupView.measure(
-            View.MeasureSpec.UNSPECIFIED,
-            View.MeasureSpec.UNSPECIFIED
-        )
+        // Measure the width of the popup
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWidth = popupView.measuredWidth
 
+        // Show the popup near the anchor view
         popupWindow.showAsDropDown(anchor, -popupWidth + anchor.width, 10)
 
+        // Map checkboxes to their filter values
+        val filters = mapOf(
+            R.id.filter_today to "today",
+            R.id.filter_week to "week",
+            R.id.filter_month to "month",
+            R.id.filter_lost to "lost",
+            R.id.filter_found to "found"
+        )
 
-        val todayCheckBox = popupView.findViewById<CheckBox>(R.id.filter_today)
-        val weekCheckBox = popupView.findViewById<CheckBox>(R.id.filter_week)
-        val monthCheckBox = popupView.findViewById<CheckBox>(R.id.filter_month)
-        val lostCheckBox = popupView.findViewById<CheckBox>(R.id.filter_lost)
-        val foundCheckBox = popupView.findViewById<CheckBox>(R.id.filter_found)
+        // Find views and handle the filter selection logic
         val applyButton = popupView.findViewById<Button>(R.id.apply_filters_button)
-
         applyButton.setOnClickListener {
-            val selected = mutableListOf<String>()
-            if (todayCheckBox.isChecked) selected.add("today")
-            if (weekCheckBox.isChecked) selected.add("week")
-            if (monthCheckBox.isChecked) selected.add("month")
-            if (lostCheckBox.isChecked) selected.add("lost")
-            if (foundCheckBox.isChecked) selected.add("found")
+            // Collect selected filters
+            val selectedFilters = filters.filter { (checkboxId, filter) ->
+                popupView.findViewById<CheckBox>(checkboxId).isChecked
+            }.values.toList()
 
-//            // Next: send to ViewModel
-//            viewModel.onEvent(HomeScreenEvent.OnFiltersSelected(selected))
+            // Pass the selected filters to the ViewModel
+            viewModel.onEvent(HomeScreenEvent.OnFiltersSelected(selectedFilters))
 
             popupWindow.dismiss()
         }
     }
+
 
 
 }

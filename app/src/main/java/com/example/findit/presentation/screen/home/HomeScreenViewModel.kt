@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.findit.presentation.extension.*
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
@@ -49,6 +50,10 @@ class HomeScreenViewModel @Inject constructor(
             }
             is HomeScreenEvent.ClearError -> {
                 clearErrors()
+            }
+            is HomeScreenEvent.OnFiltersSelected -> {
+                _state.value = _state.value.copy(selectedFilters = homeScreenEvent.selectedFilters)
+                applyFilters() // call a new function
             }
         }
     }
@@ -109,6 +114,44 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
     }
+
+
+    private fun applyFilters() {
+        viewModelScope.launch {
+            val filters = _state.value.selectedFilters
+
+            getPostsUseCase().collectLatest { result ->
+                when (result) {
+                    is Resource.Loader -> _state.value = _state.value.copy(isLoading = result.isLoading)
+
+                    is Resource.Success -> {
+                        var posts = result.data.map { it.toPresentation() }
+
+                        if (filters.isNotEmpty()) {
+                            posts = posts.filter { post ->
+                                filters.any { filter ->
+                                    when (filter) {
+                                        "today" -> post.isToday()
+                                        "week" -> post.isThisWeek()
+                                        "month" -> post.isThisMonth()
+                                        "lost" -> post.isLost()
+                                        "found" -> post.isFound()
+                                        else -> true
+                                    }
+                                }
+                            }
+                        }
+                        _state.value = _state.value.copy(posts = posts, isLoading = false)
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(error = result.errorMessage, isLoading = false)
+                    }
+                }
+            }
+        }
+    }
+
     private fun clearErrors(){
         _state.value = _state.value.copy(error = null)
     }
