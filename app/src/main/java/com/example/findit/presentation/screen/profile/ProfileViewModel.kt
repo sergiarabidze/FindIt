@@ -31,6 +31,8 @@ class ProfileViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<ProfileEffect>()
     val effect: SharedFlow<ProfileEffect> = _effect
 
+    private val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+
     init {
         loadImage()
         loadUserName()
@@ -60,7 +62,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun loadImage() {
         viewModelScope.launch {
-            getProfilePictureUseCase().collect { result ->
+            getProfilePictureUseCase(uid).collect { result ->
                 when (result) {
                     is Resource.Loader -> _state.update { it.copy(isLoading = result.isLoading) }
                     is Resource.Success -> {
@@ -83,7 +85,6 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
                 val name = getUserNameUseCase(uid)
                 _state.update {
                     it.copy(

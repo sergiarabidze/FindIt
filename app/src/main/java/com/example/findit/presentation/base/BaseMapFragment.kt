@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
@@ -17,17 +18,25 @@ import com.google.android.gms.location.LocationServices
 
 abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) : BaseFragment<VB>(inflate) {
     protected lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
+
+    // Registering ActivityResultLauncher in onAttach
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Register the permission request launcher here
+        locationPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
+                setupLocation()
+            } else {
+                binding.root.showSnackBar("Location permission denied")
+            }
+        }
+    }
 
     private fun requestPermissions() {
-        val locationPermissionRequest =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
-                    setupLocation()
-                } else {
-                    binding.root.showSnackBar("Location permission denied")
-                }
-            }
-
         locationPermissionRequest.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -35,7 +44,6 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
             )
         )
     }
-
 
     private fun isLocationEnabled(context: Context): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -54,7 +62,6 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
             startActivity(intent)
         }
     }
-
 
     private fun checkPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(
@@ -79,9 +86,10 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         }
     }
 
-   open fun onLocationSetupSuccess() {
-       fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-   }
+    // Overridable method for location setup success
+    open fun onLocationSetupSuccess() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
 
     override fun onResume() {
         super.onResume()
@@ -90,4 +98,3 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
         }
     }
 }
-

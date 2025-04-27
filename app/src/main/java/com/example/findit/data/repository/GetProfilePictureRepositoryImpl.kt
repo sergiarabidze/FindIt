@@ -18,12 +18,9 @@ class GetProfilePictureRepositoryImpl @Inject constructor(
     private val apiHelper: ApiHelper
 ) : GetProfilePictureRepository {
 
-    override suspend fun getProfilePictureUrl(): Flow<Resource<String>> {
-        val uid = auth.currentUser?.uid ?: return flow {
-            emit(Resource.Error("User not logged in"))
-        }
+    override suspend fun getProfilePictureUrl(userid :String): Flow<Resource<String>> {
         return apiHelper.safeFireBaseCall {
-            firestore.collection(FirestoreKeys.USERS).document(uid).get()
+            firestore.collection(FirestoreKeys.USERS).document(userid).get()
         }.mapResourceData { snapshot ->
             val imageUrl = snapshot.getString(FirestoreKeys.PROFILE_IMAGE)
             Log.d("ProfileImageRepo", "📸 Image URL from Firestore: $imageUrl")

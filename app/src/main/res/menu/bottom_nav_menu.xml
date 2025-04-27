@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/chatListFragment"
+        android:icon="@drawable/chat_icon"
+        android:title="@string/chat"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/addPostFragment"
         android:icon="@drawable/add_post_ic"
         android:title="@string/add_post"

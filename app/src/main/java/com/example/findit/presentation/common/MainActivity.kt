@@ -3,6 +3,7 @@ package com.example.findit.presentation.common
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -27,11 +29,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.loginFragment, R.id.registerFragment, R.id.editProfileFragment-> {
-                    binding.bottomNavView.visibility = android.view.View.GONE
+                R.id.homeFragment, R.id.addPostFragment, R.id.locationFragment, R.id.profileFragment, R.id.chatListFragment-> {
+                    binding.bottomNavView.visibility = android.view.View.VISIBLE
                 }
                 else -> {
-                    binding.bottomNavView.visibility = android.view.View.VISIBLE
+                    binding.bottomNavView.visibility = android.view.View.GONE
                 }
             }
         }

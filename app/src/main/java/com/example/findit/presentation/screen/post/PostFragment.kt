@@ -39,6 +39,17 @@ class PostFragment : BaseFragment<FragmentPostBinding>(FragmentPostBinding::infl
             btnViewLocation.setOnClickListener {
                 viewModel.onEvent(PostEvent.ViewLocation)
             }
+            btnContactUser.setOnClickListener{
+
+                    val receiverId = viewModel.state.value.post?.userId
+                    if (receiverId != null) {
+                        val action = PostFragmentDirections.actionPostFragmentToChatFragment(receiverId)
+                        findNavController().navigate(action)
+                    } else {
+                        root.showSnackBar("User not loaded")
+                    }
+
+            }
         }
     }
 

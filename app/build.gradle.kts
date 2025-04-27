@@ -80,6 +80,7 @@ dependencies {
     implementation (libs.play.services.location)
     implementation (libs.android.maps.utils)
     implementation (libs.google.android.maps.utils.v230)
+    implementation (libs.firebase.messaging)
 }
 kapt {
     correctErrorTypes = true

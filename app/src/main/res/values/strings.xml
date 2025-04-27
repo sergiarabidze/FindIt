@@ -51,4 +51,6 @@
     <string name="mark_location">Mark Location</string>
     <string name="login">Login</string>
     <string name="view_post">View Post</string>
+    <string name="chat">Chat</string>
+    <string name="type_a_message">Type a message</string>
 </resources>

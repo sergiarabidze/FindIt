@@ -20,8 +20,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getUserFullName(userId: String): String {
         try {
-            val uid = auth.currentUser?.uid ?: throw Exception()
-            val snapshot = firestore.collection(FirestoreKeys.USERS).document(uid).get().await()
+            val snapshot = firestore.collection(FirestoreKeys.USERS).document(userId).get().await()
             val name = snapshot.getString(FirestoreKeys.NAME)
             val surname = snapshot.getString(FirestoreKeys.SURNAME)
             val fullName = "$name $surname"

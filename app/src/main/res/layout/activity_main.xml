@@ -8,7 +8,7 @@
     android:background="#FFED49"
     tools:context=".presentation.common.MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/navHostFragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"

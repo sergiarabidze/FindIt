@@ -120,6 +120,9 @@
         <action
             android:id="@+id/action_postFragment_to_viewLocationFragment2"
             app:destination="@id/viewLocationFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/viewLocationFragment"
@@ -148,4 +151,26 @@
             app:argType="string" />
         <argument android:name="description" />
     </dialog>
+
+
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.findit.presentation.screen.chat.ChatFragment"
+        android:label="ChatFragment" >
+        <argument
+            android:name="receiverId"
+            app:argType="string"
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.example.findit.presentation.screen.chatlist.ChatListFragment"
+        android:label="ChatListFragment" >
+        <action
+            android:id="@+id/action_chatListFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
 </navigation>
