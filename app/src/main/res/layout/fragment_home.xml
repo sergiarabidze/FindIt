@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFED49">
+    android:background="@color/application_background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.MaterialComponents.Light"
         app:elevation="4dp"
-        android:background="#FFED49">
+        android:background="@color/application_background">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/header_container"
@@ -28,7 +28,7 @@
                 android:id="@+id/welcome_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome Username"
+                tools:text="Welcome Username"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -47,13 +47,13 @@
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:hint="Search..."
+                    android:hint="@string/search"
                     android:textColorHint="@color/black"
                     android:textColor="@color/black"
                     android:background="@drawable/auth_edit_text"
                     android:paddingHorizontal="12dp" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/filter_icon"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
@@ -83,7 +83,7 @@
         android:padding="8dp"
         android:visibility="gone"
         android:clipToPadding="false"
-        android:background="@android:color/transparent"
+        android:background="@color/transparent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

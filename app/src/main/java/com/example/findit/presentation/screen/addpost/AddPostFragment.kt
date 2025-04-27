@@ -1,5 +1,6 @@
 package com.example.findit.presentation.screen.addpost
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Environment
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,7 +46,6 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                 }
             }
         }
-
     override fun setUp() {
         parentFragmentManager.setFragmentResultListener(
             ImageOptionDialog.REQUEST_KEY,
@@ -84,7 +84,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
             }
 
             addLocationId.setOnClickListener {
-                navigateToMap()
+                viewModel.onEvent(AddPostEvent.OpenMap)
             }
 
             addPostId.setOnClickListener {
@@ -94,6 +94,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun setObservers() {
         launchCoroutine {
             viewModel.state.collectLatest{ state ->
@@ -110,16 +111,25 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
         launchCoroutine {
             viewModel.event.collectLatest{event->
                 when(event){
-                    AddPostUiEvent.OpenImageOptions ->{
+                    is AddPostUiEvent.OpenImageOptions ->{
                         openOptionsDialog()
                     }
-                    AddPostUiEvent.OpenLocation ->{
 
+                    is AddPostUiEvent.OpenLocation ->{
+                        navigateToMap()
                     }
 
-                    AddPostUiEvent.AddPost ->{
+                    is AddPostUiEvent.AddPost ->{
                         binding.root.showSnackBar("successfully aitvirta")
                         navigateToHomeScreen()
+                    }
+
+                   is  AddPostUiEvent.LocationAdded ->{
+                        with(binding) {
+                            addLocationId.text = getString(R.string.change_location)
+                            addLocationId.setBackgroundDrawable(requireContext().getDrawable(R.drawable.change_location_button))
+                            addLocationId.setTextColor(R.color.black)
+                        }
                     }
                 }
             }
@@ -158,7 +168,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                 R.id.lost_radio -> PostType.LOST
                 else -> PostType.FOUND
             }
-            viewModel.onEvent(AddPostEvent.AddPost(type = postType, desc, latLng = LatLng(0.0,0.0)))
+            viewModel.onEvent(AddPostEvent.AddPost(type = postType, desc))
         }
     }
 
@@ -168,10 +178,10 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
     }
 
     private fun navigateToHomeScreen(){
-        requireActivity()
-            .findViewById<BottomNavigationView>(R.id.bottomNavView)
-            .selectedItemId = R.id.homeFragment
+        val action = AddPostFragmentDirections.actionAddPostFragmentToHomeFragment()
+        findNavController().navigate(action)
     }
+
     private fun navigateToMap(){
         val action = AddPostFragmentDirections.actionAddPostFragmentToMarkFragment()
         findNavController().navigate(action)

@@ -51,4 +51,10 @@
     <string name="mark_location">Mark Location</string>
     <string name="login">Login</string>
     <string name="view_post">View Post</string>
+    <string name="location_services_disabled">location services disabled</string>
+    <string name="asking_for_location">asking for location</string>
+    <string name="enable">Enable</string>
+    <string name="my_posts">My Posts</string>
+    <string name="search">Search...</string>
+    <string name="change_location">Change location</string>
 </resources>

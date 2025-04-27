@@ -40,9 +40,12 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
 
     override fun onLocationSetupSuccess() {
         super.onLocationSetupSuccess()
-        initializeMap()
-        viewModel.onEvent(LocationEvent.GetPosts)
         fetchCurrentUser()
+    }
+
+    override fun setUp() {
+        super.setUp()
+        initializeMap()
     }
 
     private fun initializeMap() {
@@ -53,14 +56,18 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        d("map", "map ready")
+        viewModel.onEvent(LocationEvent.GetPosts)
         setUpClustering(map)
+        observers()
     }
 
 
-    override fun setObservers() {
+    private fun observers() {
         launchCoroutine {
-            viewModel.state.collectLatest { state ->
+            viewModel.state.collect { state ->
                 if (::map.isInitialized && state.currentUserLocation != null) {
+
                     val userLocation = state.currentUserLocation
                     map.addMarker(
                         MarkerOptions()
@@ -103,6 +110,7 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
         clusterManager.cluster()
     }
 
+
     private fun fetchCurrentUser() {
         try {
             fusedLocationClient.lastLocation
@@ -120,6 +128,8 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
         }
     }
 
+
+
     @SuppressLint("PotentialBehaviorOverride")
     private fun setUpClustering(map: GoogleMap) {
         clusterManager = ClusterManager(requireContext(), map)
@@ -134,5 +144,6 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
             true
         }
     }
+
 
 }

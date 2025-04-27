@@ -47,6 +47,10 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.LogoutClicked ->{
                 logout()
             }
+
+            ProfileEvent.MyProfileClicked ->{
+                navigateToMyProfile()
+            }
         }
     }
 
@@ -109,6 +113,11 @@ class ProfileViewModel @Inject constructor(
     private fun navigateToEditProfile() {
         viewModelScope.launch {
             _effect.emit(ProfileEffect.NavigateToEditProfile)
+        }
+    }
+    private fun navigateToMyProfile() {
+        viewModelScope.launch {
+            _effect.emit(ProfileEffect.NavigateToMyProfile)
         }
     }
 }

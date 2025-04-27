@@ -7,15 +7,18 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
+import android.util.Log.d
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
+import com.example.findit.R
+import com.example.findit.presentation.extension.showAlertDialog
 import com.example.findit.presentation.extension.showSnackBar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
 
-abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) : BaseFragment<VB>(inflate) {
+abstract class BaseMapFragment<VB : ViewBinding>( inflate: Inflate<VB>) : BaseFragment<VB>(inflate) {
     protected lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private fun requestPermissions() {
@@ -27,7 +30,6 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
                     binding.root.showSnackBar("Location permission denied")
                 }
             }
-
         locationPermissionRequest.launch(
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
@@ -49,10 +51,16 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
     }
 
     private fun promptForLocationSettings() {
-        if (!isLocationEnabled(requireContext())) {
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
-        }
+        requireContext().showAlertDialog(
+            title = getString(R.string.location_services_disabled),
+            message = getString(R.string.asking_for_location),
+            positiveButtonText = getString(R.string.enable),
+            negativeButtonText = getString(R.string.cancel),
+            positiveButtonClickAction = {
+                val locationSettingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(locationSettingsIntent)
+            }
+        )
     }
 
 
@@ -81,6 +89,7 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
 
    open fun onLocationSetupSuccess() {
        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
    }
 
     override fun onResume() {

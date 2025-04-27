@@ -30,6 +30,10 @@ class MarkFragment : BaseMapFragment<FragmentMarkBinding>(FragmentMarkBinding::i
     override fun onLocationSetupSuccess() {
         super.onLocationSetupSuccess()
         fetchCurrentUser()
+    }
+
+    override fun setUp() {
+        super.setUp()
         initializeMap()
     }
 
@@ -44,11 +48,10 @@ class MarkFragment : BaseMapFragment<FragmentMarkBinding>(FragmentMarkBinding::i
         map.setOnMapClickListener { latLng ->
             viewModel.onEvent(MarkEvent.UpdateSelectedLocation(latLng))
         }
-
-        observeViewModel()
+        observer()
     }
 
-    private fun observeViewModel() {
+    private fun observer() {
         launchCoroutine {
             viewModel.selectedLatLng.collect { latLng ->
                 latLng?.let {
