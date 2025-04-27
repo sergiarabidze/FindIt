@@ -3,7 +3,6 @@ package com.example.findit.presentation.extension
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 
