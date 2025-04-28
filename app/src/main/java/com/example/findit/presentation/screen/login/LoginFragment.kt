@@ -1,20 +1,15 @@
 package com.example.findit.presentation.screen.login
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.UnderlineSpan
-import android.util.Log.d
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navOptions
 import com.example.findit.R
 import com.example.findit.databinding.FragmentLoginBinding
 import com.example.findit.presentation.base.BaseFragment
@@ -29,9 +24,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private val viewModel: LoginViewModel by viewModels()
 
     override fun setUp() {
-
         setupSignUpNavigationText()
-
     }
 
     override fun setListeners() {
@@ -41,7 +34,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    @SuppressLint("ResourceAsColor")
     override fun setObservers() {
         launchCoroutine {
             viewModel.loginEvent.collectLatest { event ->
@@ -82,7 +74,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         findNavController().navigate(action)
     }
     private fun navigateToHomeScreen(){
-        d("LoginFragment", "Navigate to home screen")
         val action = LoginFragmentDirections.actionLoginFragmentToHomeFragment()
         findNavController().navigate(action)
     }

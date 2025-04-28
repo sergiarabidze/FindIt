@@ -65,4 +65,6 @@
     <string name="last_week">Last Week</string>
     <string name="last_month">Last Month</string>
     <string name="apply">Apply</string>
+    <string name="successfully_uploaded">successfully uploaded</string>
+    <string name="change_image">Change image</string>
 </resources>

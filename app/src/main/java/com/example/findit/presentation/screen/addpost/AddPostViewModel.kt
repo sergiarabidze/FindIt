@@ -13,7 +13,9 @@ import com.example.findit.domain.model.PostDomain
 import com.example.findit.domain.model.PostType
 import com.example.findit.domain.resource.Resource
 import com.example.findit.domain.usecase.GetCurrentUserIdUseCase
+import com.example.findit.domain.usecase.GetProfilePictureUseCase
 import com.example.findit.domain.usecase.GetUserNameUseCase
+import com.example.findit.domain.usecase.GetUserProfileUrlUseCase
 import com.example.findit.domain.usecase.UploadPostPhotoUseCase
 import com.example.findit.domain.usecase.UploadPostUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,8 +37,8 @@ class AddPostViewModel @Inject constructor(
     private val uploadPostPhotoUseCase: UploadPostPhotoUseCase,
     private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
     private val uploadPostUseCase: UploadPostUseCase,
-    private val getUserNameUseCase: GetUserNameUseCase
-    
+    private val getUserNameUseCase: GetUserNameUseCase,
+    private val getUserProfileUrlUseCase: GetUserProfileUrlUseCase
 ) : ViewModel(){
 
     private val _state = MutableStateFlow(AddPostState())
@@ -123,10 +125,11 @@ class AddPostViewModel @Inject constructor(
                 _state.value = _state.value.copy(error = "you must specify location")
                 return@launch
             }
+            _state.value = _state.value.copy(isLoading = true)
             state.value.bitmap?.let { uploadPostPhotoUseCase(it) }?.collectLatest { resource ->
                 when(resource){
                     is Resource.Error -> {
-                        _state.value = _state.value.copy(error = resource.errorMessage)
+                        _state.value = _state.value.copy(error = resource.errorMessage, isLoading = false)
                     }
                     is Resource.Loader ->{
                         _state.value = _state.value.copy(isLoading = resource.isLoading)
@@ -134,7 +137,7 @@ class AddPostViewModel @Inject constructor(
                     is Resource.Success ->{
 
                         val currentUser = getCurrentUserIdUseCase() ?: ""
-
+                        val profilePicture = getUserProfileUrlUseCase(currentUser)
                         val fullName = getUserNameUseCase(currentUser)
 
                         val post = PostDomain(
@@ -144,18 +147,20 @@ class AddPostViewModel @Inject constructor(
                             location = LocationModel(longitude = latLng.longitude, latitude = latLng.latitude),
                             timestamp = System.currentTimeMillis(),
                             postType = type,
-                            userFullName = fullName
+                            userFullName = fullName,
+                            userProfilePicture = profilePicture
                         )
 
                         uploadPostUseCase(post).collectLatest{
                             when(it){
                                 is Resource.Error ->{
-                                    _state.value = _state.value.copy(error = it.errorMessage)
+                                    _state.value = _state.value.copy(error = it.errorMessage, isLoading = false)
                                 }
                                 is Resource.Loader ->{
                                     _state.value = _state.value.copy(isLoading = it.isLoading)
                                 }
                                 is Resource.Success ->{
+                                    _state.value = _state.value.copy(isLoading = false)
                                     _event.emit(AddPostUiEvent.AddPost)
                                 }
                             }

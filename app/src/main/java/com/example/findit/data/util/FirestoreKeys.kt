@@ -1,6 +1,7 @@
 package com.example.findit.data.util
 
 object FirestoreKeys {
+    const val USER_PROFILE_PICTURE = "userProfilePicture"
     const val POSTS = "posts"
     const val POST_ID = "postId"
     const val IMAGE_URL = "imageUrl"

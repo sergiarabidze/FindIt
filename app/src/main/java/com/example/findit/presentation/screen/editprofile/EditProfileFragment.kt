@@ -70,7 +70,6 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
                     surname = etSurname.text.toString(),
                     phone = etPhone.text.toString(),
                     email = etEmail.text.toString(),
-                    password = etPassword.text.toString()
                 )
                 updatedProfile?.let {
                     viewModel.updateUserProfileData(it)

@@ -10,6 +10,7 @@ data class PostDto(
     val userId: String,
     val timestamp: Long,
     val location: GeoPoint,
+    val userProfilePicture : String,
     val postType: PostType,
     val userFullName : String,
 )

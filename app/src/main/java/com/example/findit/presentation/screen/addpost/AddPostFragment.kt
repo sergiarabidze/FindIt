@@ -100,10 +100,19 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
             viewModel.state.collectLatest{ state ->
                 with(binding) {
                     photoId.setImageBitmap(state.bitmap)
+                    state.bitmap?.let {
+                        addPhotoId.text = getString(R.string.change_image)
+                        addPhotoId.setBackgroundDrawable(requireContext().getDrawable(R.drawable.change_location_button))
+                        addPhotoId.setTextColor(R.color.black)
+                    }
                     photoId.isGone = state.bitmap == null
                     state.error?.let {
                         root.showSnackBar(it)
                     }
+                    progressBar.isGone = !state.isLoading
+                    addPostId.isEnabled = !state.isLoading
+                    addLocationId.isEnabled = !state.isLoading
+
                 }
             }
         }
@@ -120,7 +129,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                     }
 
                     is AddPostUiEvent.AddPost ->{
-                        binding.root.showSnackBar("successfully aitvirta")
+                        binding.root.showSnackBar(getString(R.string.successfully_uploaded))
                         navigateToHomeScreen()
                     }
 

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -21,14 +20,6 @@
         android:theme="@style/Theme.App.Starting"
         tools:targetApi="31">
 
-        <service
-            android:name=".data.notification.MyFirebaseMessagingService"
-            android:exported="false"
-            android:permission="TODO">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -27,9 +27,6 @@ class SplashViewModel @Inject constructor(
             val language = getAppLanguageUseCase()
             _effect.emit(SplashEffect.SetLocale(language))
 
-
-            kotlinx.coroutines.delay(100L)
-
             val user = getCurrentUserIdUseCase()
             if (user == null) {
                 _effect.emit(SplashEffect.NavigateToLoginScreen)
