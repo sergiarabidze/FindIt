@@ -7,16 +7,21 @@
     android:padding="16dp"
     tools:context=".presentation.screen.editprofile.EditProfileFragment">
 
-    <androidx.appcompat.widget.AppCompatImageView
+
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageProfile"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="156dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/circle_background"
+        android:src="@drawable/user"
         android:scaleType="centerCrop"
+        android:background="@drawable/circle_background"
+        app:shapeAppearanceOverlay="@style/RoundImageShape"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvName"

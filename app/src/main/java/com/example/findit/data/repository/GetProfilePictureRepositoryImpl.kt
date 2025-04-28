@@ -13,7 +13,6 @@ import javax.inject.Inject
 import android.util.Log
 
 class GetProfilePictureRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val apiHelper: ApiHelper
 ) : GetProfilePictureRepository {
@@ -23,7 +22,6 @@ class GetProfilePictureRepositoryImpl @Inject constructor(
             firestore.collection(FirestoreKeys.USERS).document(userid).get()
         }.mapResourceData { snapshot ->
             val imageUrl = snapshot.getString(FirestoreKeys.PROFILE_IMAGE)
-            Log.d("ProfileImageRepo", "📸 Image URL from Firestore: $imageUrl")
             imageUrl ?: ""
         }
     }

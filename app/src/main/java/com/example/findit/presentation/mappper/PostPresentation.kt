@@ -16,7 +16,8 @@ fun PostDomain.toPresentation(): PostPresentation {
         timestamp = formatTimestamp(timestamp),
         location = LatLng(location.latitude, location.longitude),
         postType = postType,
-        userFullName = userFullName
+        userFullName = userFullName,
+        userProfilePicture = userProfilePicture
     )
 }
 

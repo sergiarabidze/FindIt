@@ -29,4 +29,14 @@ class UserRepositoryImpl @Inject constructor(
             return "unknown user"
         }
     }
+    override suspend fun getUserProfile(userId: String): String {
+        try {
+            val snapshot = firestore.collection(FirestoreKeys.USERS).document(userId).get().await()
+            val profileImageUrl = snapshot.getString(FirestoreKeys.PROFILE_IMAGE)
+            return profileImageUrl ?: ""
+        } catch (e: Exception) {
+            return ""
+        }
+    }
+
 }

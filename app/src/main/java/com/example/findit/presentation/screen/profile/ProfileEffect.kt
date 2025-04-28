@@ -5,5 +5,4 @@ sealed interface ProfileEffect {
     data object NavigateToLogin : ProfileEffect
     data object NavigateToMyProfile : ProfileEffect
     data object NavigateToEditProfile : ProfileEffect
-    data object NavigateToChangeTheme : ProfileEffect
 }

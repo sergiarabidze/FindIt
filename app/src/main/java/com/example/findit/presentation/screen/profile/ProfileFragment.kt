@@ -39,7 +39,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
             viewModel.effect.collect { effect ->
                 when (effect) {
                     is ProfileEffect.ChangeLanguage -> setLocale(effect.languageCode)
-                    ProfileEffect.NavigateToChangeTheme -> TODO()
                     ProfileEffect.NavigateToEditProfile -> {
                         val action = ProfileFragmentDirections.actionProfileFragmentToEditProfileFragment()
                         findNavController().navigate(action)
@@ -64,8 +63,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                 }
             }
         }
-
-
     }
 
     private fun setLocale(languageCode: String) {

@@ -8,6 +8,7 @@ data class PostPresentation(
     val postId: String = UUID.randomUUID().toString(),
     val imageUrl: String = "",
     val description: String = "",
+    val userProfilePicture : String = "",
     val userId: String = "",
     val timestamp: String = "0",
     val location: LatLng = LatLng(0.0, 0.0),

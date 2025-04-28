@@ -69,6 +69,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(FragmentPostBinding::infl
                         tvPhoneNumber.text = it.phone
                         tvUserFullname.text = getString(R.string.fullname, it.name, it.surname)
                         tvUserEmail.text = it.email
+                        ivProfilePicture.loadImage(it.profileImageUrl,R.drawable.ic_my_profile)
                     }
                 }
 

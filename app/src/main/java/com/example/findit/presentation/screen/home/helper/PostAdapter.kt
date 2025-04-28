@@ -21,6 +21,7 @@ class PostAdapter(val onPostClicked : (String) -> Unit) : ListAdapter<PostPresen
             tvUserId.text = post.userFullName
             tvTimestamp.text = post.timestamp
             ivPostImage.loadImage(post.imageUrl, R.drawable.postdefault)
+            imgProfile.loadImage(post.userProfilePicture, R.drawable.ic_my_profile)
             root.setOnClickListener {
                 onPostClicked(post.postId)
             }

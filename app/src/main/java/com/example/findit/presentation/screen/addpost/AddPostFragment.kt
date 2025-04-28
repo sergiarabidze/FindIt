@@ -104,6 +104,10 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                     state.error?.let {
                         root.showSnackBar(it)
                     }
+                    progressBar.isGone = !state.isLoading
+                    addPostId.isEnabled = !state.isLoading
+                    addLocationId.isEnabled = !state.isLoading
+
                 }
             }
         }
@@ -120,7 +124,7 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                     }
 
                     is AddPostUiEvent.AddPost ->{
-                        binding.root.showSnackBar("successfully aitvirta")
+                        binding.root.showSnackBar(getString(R.string.successfully_uploaded))
                         navigateToHomeScreen()
                     }
 
