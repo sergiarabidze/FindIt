@@ -101,7 +101,6 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
                         if (etSurname.text.toString() != profile.surname) etSurname.setText(profile.surname)
                         if (etPhone.text.toString() != profile.phone) etPhone.setText(profile.phone)
                         if (etEmail.text.toString() != profile.email) etEmail.setText(profile.email)
-                        if (etPassword.text.toString() != profile.password) etPassword.setText(profile.password)
                     }
                 }
             }

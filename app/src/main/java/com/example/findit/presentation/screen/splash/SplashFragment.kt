@@ -3,7 +3,6 @@ package com.example.findit.presentation.screen.splash
 import android.content.res.Configuration
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.findit.R
 import com.example.findit.databinding.FragmentSplashBinding
 import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.launchCoroutine

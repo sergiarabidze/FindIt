@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val getAppLanguageUseCase: GetAppLanguageUseCase,
@@ -20,25 +19,23 @@ class SplashViewModel @Inject constructor(
     val effect: SharedFlow<SplashEffect> = _effect
 
     init {
-        checkLanguage()
-        checkUser()
+        startSplashLogic()
     }
 
-    private fun checkLanguage() {
+    private fun startSplashLogic() {
         viewModelScope.launch {
             val language = getAppLanguageUseCase()
             _effect.emit(SplashEffect.SetLocale(language))
-        }
-    }
 
-    private fun checkUser() {
-        viewModelScope.launch {
-            val user = getCurrentUserIdUseCase.invoke()
-           if(user == null){
-               _effect.emit(SplashEffect.NavigateToLoginScreen)
-           }else{
-               _effect.emit(SplashEffect.NavigateToHomeScreen)
-           }
+
+            kotlinx.coroutines.delay(100L)
+
+            val user = getCurrentUserIdUseCase()
+            if (user == null) {
+                _effect.emit(SplashEffect.NavigateToLoginScreen)
+            } else {
+                _effect.emit(SplashEffect.NavigateToHomeScreen)
+            }
         }
     }
 }

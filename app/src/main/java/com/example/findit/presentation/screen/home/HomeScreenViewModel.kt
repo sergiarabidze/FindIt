@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.domain.resource.Resource
 import com.example.findit.domain.usecase.GetPostsUseCase
+import com.example.findit.domain.usecase.GetUserNameUseCase
 import com.example.findit.domain.usecase.SearchPostsUseCase
 import com.example.findit.presentation.mappper.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,10 +20,15 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.findit.presentation.extension.*
+import com.example.findit.presentation.mappper.toPresentationFilter
+import com.example.findit.presentation.mappper.toPresentationFiltered
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val getPostsUseCase: GetPostsUseCase,
+    private val getUserNameUseCase : GetUserNameUseCase,
     private val searchPostsUseCase: SearchPostsUseCase
 ) : ViewModel() {
 
@@ -34,8 +40,11 @@ class HomeScreenViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<HomeScreenEffect>()
    val effect = _effect.asSharedFlow()
 
+    private val uid = FirebaseAuth.getInstance().currentUser?.uid.orEmpty()
+
     init {
         observeQueryChanges()
+        loadUserName()
     }
 
     fun onEvent(homeScreenEvent: HomeScreenEvent) {
@@ -53,7 +62,24 @@ class HomeScreenViewModel @Inject constructor(
             }
             is HomeScreenEvent.OnFiltersSelected -> {
                 _state.value = _state.value.copy(selectedFilters = homeScreenEvent.selectedFilters)
-                applyFilters() // call a new function
+                applyFilters()
+            }
+        }
+    }
+
+    private fun loadUserName() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            try {
+                val name = getUserNameUseCase(uid)
+                _state.update {
+                    it.copy(
+                        userName = name,
+                        isLoading = false
+                    )
+                }
+            } catch (e: Exception) {
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }
@@ -122,18 +148,19 @@ class HomeScreenViewModel @Inject constructor(
 
             getPostsUseCase().collectLatest { result ->
                 when (result) {
-                    is Resource.Loader -> _state.value = _state.value.copy(isLoading = result.isLoading)
-
+                    is Resource.Loader -> {
+                        _state.value = _state.value.copy(isLoading = result.isLoading)
+                    }
                     is Resource.Success -> {
-                        var posts = result.data.map { it.toPresentation() }
+                        var posts = result.data.map { it.toPresentationFilter() }
 
                         if (filters.isNotEmpty()) {
                             posts = posts.filter { post ->
-                                filters.any { filter ->
+                                filters.all { filter ->
                                     when (filter) {
                                         "today" -> post.isToday()
-                                        "week" -> post.isThisWeek()
-                                        "month" -> post.isThisMonth()
+                                        "week" -> post.isLastWeek()
+                                        "month" -> post.isLastMonth()
                                         "lost" -> post.isLost()
                                         "found" -> post.isFound()
                                         else -> true
@@ -141,9 +168,9 @@ class HomeScreenViewModel @Inject constructor(
                                 }
                             }
                         }
-                        _state.value = _state.value.copy(posts = posts, isLoading = false)
+                        val finalPosts = posts.map { it.toPresentationFiltered() }
+                        _state.value = _state.value.copy(posts = finalPosts, isLoading = false)
                     }
-
                     is Resource.Error -> {
                         _state.value = _state.value.copy(error = result.errorMessage, isLoading = false)
                     }
@@ -151,6 +178,7 @@ class HomeScreenViewModel @Inject constructor(
             }
         }
     }
+
 
     private fun clearErrors(){
         _state.value = _state.value.copy(error = null)

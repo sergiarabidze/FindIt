@@ -60,4 +60,9 @@
     <string name="search">Search...</string>
     <string name="change_location">Change location</string>
     <string name="welcome_username">Welcome Username</string>
+    <string name="welcome">Welcome, %1$s</string>
+    <string name="today">Today</string>
+    <string name="last_week">Last Week</string>
+    <string name="last_month">Last Month</string>
+    <string name="apply">Apply</string>
 </resources>

@@ -60,6 +60,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
                         root.showSnackBar(it)
                         viewModel.onEvent(HomeScreenEvent.ClearError)
                     }
+                    welcomeText.text = getString(R.string.welcome, state.userName)
 
                 }
 
