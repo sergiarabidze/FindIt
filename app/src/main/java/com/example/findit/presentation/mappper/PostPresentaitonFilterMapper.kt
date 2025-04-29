@@ -13,6 +13,7 @@ fun PostDomain.toPresentationFilter(): PostPresentationFilter {
         timestamp = timestamp,
         location = LatLng(location.latitude, location.longitude),
         postType = postType,
-        userFullName = userFullName
+        userFullName = userFullName,
+        profileImageUrl = userProfilePicture
     )
 }

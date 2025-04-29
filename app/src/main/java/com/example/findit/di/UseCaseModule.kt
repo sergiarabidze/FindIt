@@ -1,12 +1,7 @@
 package com.example.findit.di
 
-import com.example.findit.domain.usecase.GetAppLanguageUseCase
-import com.example.findit.domain.usecase.GetAppLanguageUseCaseImpl
+import com.example.findit.domain.usecase.EditProfileValidationUseCase
 import com.example.findit.domain.usecase.RegisterValidationUseCase
-import com.example.findit.domain.usecase.SetAppLanguageUseCase
-import com.example.findit.domain.usecase.SetAppLanguageUseCaseImpl
-import com.example.findit.domain.usecase.UpdateProfileUseCase
-import com.example.findit.domain.usecase.UpdateProfileUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,20 +15,9 @@ object UseCaseModule {
         return RegisterValidationUseCase()
     }
 
-
     @Provides
-    fun provideSetAppLanguageUseCase(
-        impl: SetAppLanguageUseCaseImpl
-    ): SetAppLanguageUseCase = impl
-
-    @Provides
-    fun provideGetAppLanguageUseCase(
-        impl: GetAppLanguageUseCaseImpl
-    ): GetAppLanguageUseCase = impl
-
-    @Provides
-    fun provideUpdateProfileUseCase(
-        impl : UpdateProfileUseCaseImpl
-    ):UpdateProfileUseCase = impl
+    fun provideEditProfileValidationUseCase() : EditProfileValidationUseCase{
+        return EditProfileValidationUseCase()
+    }
 
 }

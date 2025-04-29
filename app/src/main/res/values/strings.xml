@@ -71,4 +71,6 @@
     <string name="profile_saved_successfully">Profile saved successfully</string>
     <string name="image_updated">Image updated</string>
     <string name="take_photo">Take Photo</string>
+    <string name="post_details">Post Details</string>
+    <string name="contact_information">Contact Information:</string>
 </resources>

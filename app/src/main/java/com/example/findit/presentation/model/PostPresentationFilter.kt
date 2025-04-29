@@ -9,5 +9,6 @@ data class PostPresentationFilter(
     val timestamp: Long,
     val location: LatLng,
     val postType: PostType,
-    val userFullName: String
+    val userFullName: String,
+    val profileImageUrl: String
 )

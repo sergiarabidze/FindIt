@@ -7,14 +7,10 @@ import com.example.findit.domain.resource.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-interface UpdateProfileUseCase {
-    suspend operator fun invoke(profile: UserProfile): Flow<Resource<Boolean>>
-}
-
-class UpdateProfileUseCaseImpl @Inject constructor(
+class UpdateProfileUseCase @Inject constructor(
     private val repository: UpdateUserProfileRepository
-) : UpdateProfileUseCase {
-    override suspend fun invoke(profile: UserProfile): Flow<Resource<Boolean>> {
+) {
+    suspend operator fun invoke(profile: UserProfile): Flow<Resource<Boolean>> {
         return repository.updateUserProfile(profile)
     }
 }

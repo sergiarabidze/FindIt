@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.domain.model.UserProfile
 import com.example.findit.domain.resource.Resource
+import com.example.findit.domain.resource.ValidationResult
+import com.example.findit.domain.usecase.EditProfileValidationUseCase
 import com.example.findit.domain.usecase.GetCurrentUserIdUseCase
 import com.example.findit.domain.usecase.GetProfileUseCase
 import com.example.findit.domain.usecase.UpdateProfileImageUrlUseCase
@@ -30,7 +32,8 @@ class EditProfileViewModel @Inject constructor(
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val uploadProfilePhotoUseCase: UploadProfilePhotoUseCase,
     private val updateProfileImageUrlUseCase: UpdateProfileImageUrlUseCase,
-    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase
+    private val getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
+    private val validationUseCase: EditProfileValidationUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(EditProfileState())
@@ -44,12 +47,10 @@ class EditProfileViewModel @Inject constructor(
             is EditProfileEvent.LoadProfile -> loadProfile()
             is EditProfileEvent.OnSaveClicked -> saveProfile()
             is EditProfileEvent.OnProfileImageUriSelected -> compressImage(event.context, event.uri)
+            is EditProfileEvent.OnUserProfileChanged -> _state.update { it.copy(userProfile = event.updatedProfile) }
         }
     }
 
-    fun updateUserProfileData(updatedProfile: UserProfilePresentation) {
-        _state.update { it.copy(userProfile = updatedProfile) }
-    }
 
     private fun loadProfile() {
         viewModelScope.launch {
@@ -71,6 +72,13 @@ class EditProfileViewModel @Inject constructor(
     private fun saveProfile() {
         viewModelScope.launch {
             val profile = state.value.userProfile ?: return@launch
+
+            val validation = validationUseCase(profile.email, profile.phone)
+            if (validation is ValidationResult.Error) {
+                _effect.emit(EditProfileEffect.ShowError(validation.message))
+                return@launch
+            }
+
             val user = UserProfile(
                 name = profile.name,
                 surname = profile.surname,
@@ -79,6 +87,7 @@ class EditProfileViewModel @Inject constructor(
                 password = profile.password,
                 profileImageUrl = profile.profileImageUrl
             )
+
             updateProfileUseCase(user).collect { result ->
                 when (result) {
                     is Resource.Loader -> _state.update { it.copy(isLoading = result.isLoading) }
@@ -90,8 +99,10 @@ class EditProfileViewModel @Inject constructor(
     }
 
 
+
     private fun compressImage(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
+            _state.update { it.copy(isLoading = true) }
             try {
                 val inputStream = context.contentResolver.openInputStream(uri)
                 val originalBytes = inputStream?.readBytes() ?: throw IOException("Failed to read image")
@@ -120,17 +131,17 @@ class EditProfileViewModel @Inject constructor(
                 }
 
                 val finalBitmap = BitmapFactory.decodeByteArray(outputStream.toByteArray(), 0, outputStream.size())
-                _state.value = _state.value.copy(profileBitmap = finalBitmap)
+                _state.update { it.copy(profileBitmap = finalBitmap) }
+
                 uploadProfileImage(finalBitmap)
 
-
             } catch (e: Exception) {
-                _state.value = _state.value.copy(isLoading = false)
+                _state.update { it.copy(isLoading = false) }
                 _effect.emit(EditProfileEffect.ShowError(e.localizedMessage ?: "Image compression failed"))
-
             }
         }
     }
+
 
     private fun uploadProfileImage(bitmap: Bitmap) {
         viewModelScope.launch {
@@ -151,6 +162,7 @@ class EditProfileViewModel @Inject constructor(
                     is Resource.Success -> {
                         _state.update { currentState ->
                             currentState.copy(
+                                isLoading = false,
                                 userProfile = currentState.userProfile?.copy(profileImageUrl = url)
                             )
                         }
@@ -162,6 +174,4 @@ class EditProfileViewModel @Inject constructor(
             }
         }
     }
-
-
 }
