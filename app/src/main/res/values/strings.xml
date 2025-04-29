@@ -67,4 +67,7 @@
     <string name="apply">Apply</string>
     <string name="successfully_uploaded">successfully uploaded</string>
     <string name="change_image">Change image</string>
+    <string name="user_not_loaded">User not loaded</string>
+    <string name="profile_saved_successfully">Profile saved successfully</string>
+    <string name="image_updated">Image updated</string>
 </resources>

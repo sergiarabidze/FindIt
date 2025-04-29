@@ -2,7 +2,6 @@ package com.example.findit.presentation.screen.post
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log.d
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -45,7 +44,7 @@ class PostFragment : BaseFragment<FragmentPostBinding>(FragmentPostBinding::infl
                         val action = PostFragmentDirections.actionPostFragmentToChatFragment(receiverId)
                         findNavController().navigate(action)
                     } else {
-                        root.showSnackBar("User not loaded")
+                        root.showSnackBar(getString(R.string.user_not_loaded))
                     }
 
             }

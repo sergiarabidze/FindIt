@@ -125,7 +125,7 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
 
 
     private fun openGallery() {
-        galleryLauncher.launch("image/*")
+        galleryLauncher.launch(getString(R.string.image))
     }
 
     private fun openCamera() {
@@ -134,13 +134,15 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
             cameraLauncher.launch(uri)
         }
     }
-
     private fun getTempFileUri(): Uri {
         val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val file = File.createTempFile("img_${System.currentTimeMillis()}", ".jpg", storageDir)
+        val file = File.createTempFile(getString(R.string.img, System.currentTimeMillis().toString()),
+            getString(
+                R.string.jpg
+            ), storageDir)
         return FileProvider.getUriForFile(
             requireContext(),
-            "${requireContext().packageName}.provider",
+            getString(R.string.provider, requireContext().packageName),
             file
         )
     }

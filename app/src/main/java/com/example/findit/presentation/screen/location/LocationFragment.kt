@@ -56,7 +56,6 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        d("map", "map ready")
         viewModel.onEvent(LocationEvent.GetPosts)
         setUpClustering(map)
         observers()
@@ -140,10 +139,11 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
         map.setOnCameraIdleListener(clusterManager)
         map.setOnMarkerClickListener(clusterManager)
         clusterManager.setOnClusterItemClickListener { item ->
-            viewModel.onEvent(LocationEvent.OpenBottomSheet(item.postId,item.title,item.snippet))
+            viewModel.onEvent(LocationEvent.OpenBottomSheet(item.postId, item.title, item.snippet))
             true
         }
     }
+
 
 
 }

@@ -1,6 +1,5 @@
 package com.example.findit.presentation.screen.register
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
@@ -8,6 +7,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -18,7 +18,6 @@ import com.example.findit.domain.resource.RegisterForm
 import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.hideKeyboard
 import com.example.findit.presentation.extension.launchCoroutine
-import com.example.findit.presentation.extension.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -30,7 +29,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     override fun setUp() {
         setupLoginNavigationText()
         addListeners()
-
     }
 
 
@@ -50,7 +48,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     btnSignUp.isClickable = !state.isLoading && state.btnEnabled
 
                     state.error?.let {
-                        root.showSnackBar(state.error)
+                        errorText.text = state.error
                         viewModel.onEvent(RegisterEvent.ClearError)
                     }
                 }
@@ -146,11 +144,10 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 viewModel.onEvent(RegisterEvent.NavigateToLoginScreen)
             }
 
-            @SuppressLint("ResourceAsColor")
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
-                ds.color = R.color.holo_blue_dark
+                ds.color = ContextCompat.getColor(requireContext(), R.color.holo_blue_dark)
             }
         }
 

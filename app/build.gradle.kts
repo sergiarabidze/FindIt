@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.hilt.common)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.storage.ktx)
+    testImplementation(libs.junit.junit)
     kapt(libs.hilt.compiler)
     implementation(libs.glide)
     implementation(libs.retrofit)
@@ -81,6 +82,15 @@ dependencies {
     implementation (libs.android.maps.utils)
     implementation (libs.google.android.maps.utils.v230)
     implementation (libs.firebase.messaging)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation (libs.mockk)
+    testImplementation (libs.junit)
+    testImplementation (libs.kotlinx.coroutines.test.v173)
+
 }
 kapt {
     correctErrorTypes = true

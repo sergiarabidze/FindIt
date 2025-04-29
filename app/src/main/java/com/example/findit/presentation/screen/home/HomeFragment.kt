@@ -88,21 +88,17 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
 
     private fun showFilterPopup(anchor: View) {
-        // Inflate the filter popup view and create the PopupWindow
         val popupView = layoutInflater.inflate(R.layout.filter_popup, null)
         val popupWindow = PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true).apply {
             elevation = 10f
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
-        // Measure the width of the popup
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val popupWidth = popupView.measuredWidth
 
-        // Show the popup near the anchor view
         popupWindow.showAsDropDown(anchor, -popupWidth + anchor.width, 10)
 
-        // Map checkboxes to their filter values
         val filters = mapOf(
             R.id.filter_today to "today",
             R.id.filter_week to "week",
@@ -111,15 +107,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             R.id.filter_found to "found"
         )
 
-        // Find views and handle the filter selection logic
         val applyButton = popupView.findViewById<Button>(R.id.apply_filters_button)
         applyButton.setOnClickListener {
-            // Collect selected filters
             val selectedFilters = filters.filter { (checkboxId, filter) ->
                 popupView.findViewById<CheckBox>(checkboxId).isChecked
             }.values.toList()
 
-            // Pass the selected filters to the ViewModel
             viewModel.onEvent(HomeScreenEvent.OnFiltersSelected(selectedFilters))
 
             popupWindow.dismiss()

@@ -2,6 +2,7 @@ package com.example.findit.presentation.screen.mark
 
 import android.graphics.Color
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.example.findit.R
@@ -90,8 +91,7 @@ class MarkFragment : BaseMapFragment<FragmentMarkBinding>(FragmentMarkBinding::i
                                 .center(latLng)
                                 .radius(3.0)
                                 .strokeColor(Color.BLUE)
-                                .fillColor(Color.parseColor("#500084d3"))
-                        )//sheidzleba shevcvalot tu ara colori unda gavitanot resursebshi
+                                .fillColor(ContextCompat.getColor(requireContext(), R.color.current_blue))                        )
 
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                     }

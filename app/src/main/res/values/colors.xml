@@ -10,4 +10,7 @@
     <color name="holo_blue_dark">#FF0099CC</color>
     <color name="application_background">#FFED49</color>
     <color name="transparent">#00000000</color>
+    <color name="error">#FF0000</color>
+    <color name="hint_text">#66666A</color>
+    <color name="current_blue">#500084d3</color>"
 </resources>

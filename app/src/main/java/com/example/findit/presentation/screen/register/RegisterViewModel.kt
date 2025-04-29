@@ -1,6 +1,5 @@
 package com.example.findit.presentation.screen.register
 
-import android.util.Log.d
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.findit.domain.resource.RegisterForm

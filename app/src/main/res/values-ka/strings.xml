@@ -61,4 +61,9 @@
     <string name="last_week">წინა კვირაში</string>
     <string name="last_month">წინა თვეში</string>
     <string name="apply">მოძებნა</string>
+    <string name="successfully_uploaded">წარმატებით აიტვირთა</string>
+    <string name="change_image">შეცვალე ფოტო</string>
+    <string name="user_not_loaded">მომხმარებელი ვერ ჩაიტვირთა</string>
+    <string name="profile_saved_successfully">პროფილი შეინახულია</string>
+    <string name="image_updated">ფოტო განახლდა</string>
 </resources>

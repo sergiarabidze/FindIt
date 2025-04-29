@@ -7,6 +7,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,7 +16,6 @@ import com.example.findit.databinding.FragmentLoginBinding
 import com.example.findit.presentation.base.BaseFragment
 import com.example.findit.presentation.extension.hideKeyboard
 import com.example.findit.presentation.extension.launchCoroutine
-import com.example.findit.presentation.extension.showSnackBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -54,7 +54,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     binding.progressBar.isVisible = state.isLoading
                     binding.btnLogin.isEnabled = !state.isLoading
                     state.error?.let {
-                        binding.root.showSnackBar(state.error)
+                        binding.errorText.text = state.error
                         viewModel.onEvent(LoginEvent.ClearError)
                     }
                 }
@@ -98,7 +98,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = true
-                ds.color = R.color.holo_blue_dark
+                ds.color = ContextCompat.getColor(requireContext(), R.color.holo_blue_dark)
             }
         }
 
@@ -108,7 +108,4 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         registerText.movementMethod = LinkMovementMethod.getInstance()
         registerText.highlightColor = Color.TRANSPARENT
     }
-
-
-
 }
