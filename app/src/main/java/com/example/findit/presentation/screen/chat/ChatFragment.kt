@@ -13,6 +13,7 @@ import com.example.findit.presentation.extension.showSnackBar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+
 @AndroidEntryPoint
 class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::inflate) {
 
@@ -47,13 +48,10 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
     override fun setObservers() {
         launchCoroutine {
             viewModel.state.collectLatest { state ->
-                // Submit updated messages list to the adapter
                 adapter.submitList(state.messages.toList()) {
-                    // Scroll to the last item when list is updated
                     binding.messagesRecyclerView.scrollToPosition(state.messages.size - 1)
                 }
 
-                // Update the UI elements with user data
                 binding.textFullName.text = state.userName
                 state.profileImageUrl?.let { imageUrl ->
                     binding.imageProfile.loadImage(
@@ -62,7 +60,6 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
                     )
                 }
 
-                // Show or hide the loading indicator based on state
                 binding.progressBar.isVisible = state.isLoading
             }
         }
@@ -71,11 +68,9 @@ class ChatFragment : BaseFragment<FragmentChatBinding>(FragmentChatBinding::infl
             viewModel.effects.collect { effect ->
                 when (effect) {
                     is ChatEffect.MessageSent -> {
-                        // Scroll to the last message when a message is sent
                         binding.messagesRecyclerView.scrollToPosition(viewModel.state.value.messages.size - 1)
                     }
                     is ChatEffect.ShowError -> {
-                        // Show error message as snack bar
                         binding.root.showSnackBar(effect.message)
                     }
                 }
