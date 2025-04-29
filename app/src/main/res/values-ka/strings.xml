@@ -66,4 +66,6 @@
     <string name="user_not_loaded">მომხმარებელი ვერ ჩაიტვირთა</string>
     <string name="profile_saved_successfully">პროფილი შეინახულია</string>
     <string name="image_updated">ფოტო განახლდა</string>
+    <string name="take_photo">გადაიღე ფოტო</string>
+
 </resources>

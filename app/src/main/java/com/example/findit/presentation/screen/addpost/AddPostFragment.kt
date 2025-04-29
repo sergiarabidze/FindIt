@@ -18,7 +18,6 @@ import com.example.findit.presentation.model.ImagePickOption
 import com.example.findit.presentation.screen.add_image_dialog.ImageOptionDialog
 import com.example.findit.presentation.screen.mark.MarkFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
@@ -112,7 +111,8 @@ class AddPostFragment : BaseFragment<FragmentAddPostBinding>(FragmentAddPostBind
                     progressBar.isGone = !state.isLoading
                     addPostId.isEnabled = !state.isLoading
                     addLocationId.isEnabled = !state.isLoading
-
+                    addPostId.isClickable = !state.isLoading
+                    addLocationId.isClickable = !state.isLoading
                 }
             }
         }

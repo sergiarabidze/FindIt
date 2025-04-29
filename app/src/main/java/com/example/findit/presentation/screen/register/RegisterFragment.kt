@@ -8,6 +8,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -46,10 +47,10 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     progressBar.isVisible = state.isLoading
                     btnSignUp.isEnabled = !state.isLoading && state.btnEnabled
                     btnSignUp.isClickable = !state.isLoading && state.btnEnabled
-
+                    errorText.isGone = true
                     state.error?.let {
+                        errorText.isGone = false
                         errorText.text = state.error
-                        viewModel.onEvent(RegisterEvent.ClearError)
                     }
                 }
             }

@@ -8,6 +8,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -53,9 +54,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 viewModel.loginState.collectLatest { state ->
                     binding.progressBar.isVisible = state.isLoading
                     binding.btnLogin.isEnabled = !state.isLoading
+                    binding.errorText.isGone = true
                     state.error?.let {
-                        binding.errorText.text = state.error
-                        viewModel.onEvent(LoginEvent.ClearError)
+                        binding.errorText.isGone = false
+                        binding.errorText.text = it
                     }
                 }
             }
