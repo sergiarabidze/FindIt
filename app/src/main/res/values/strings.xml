@@ -67,4 +67,6 @@
     <string name="apply">Apply</string>
     <string name="successfully_uploaded">successfully uploaded</string>
     <string name="change_image">Change image</string>
+    <string name="post_details">Post Details</string>
+    <string name="contact_information">Contact Information:</string>
 </resources>

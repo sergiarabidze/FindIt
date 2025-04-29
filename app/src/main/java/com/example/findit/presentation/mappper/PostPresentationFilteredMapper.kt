@@ -15,7 +15,8 @@ fun PostPresentationFilter.toPresentationFiltered(): PostPresentation {
         timestamp = formatTimestamp(timestamp),
         location = location,
         postType = postType,
-        userFullName = userFullName
+        userFullName = userFullName,
+        userProfilePicture = profileImageUrl
     )
 }
 

@@ -108,6 +108,9 @@
         <action
             android:id="@+id/action_editProfileFragment_to_imageOptionDialog"
             app:destination="@id/imageOptionDialog" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <dialog
         android:id="@+id/imageOptionDialog"

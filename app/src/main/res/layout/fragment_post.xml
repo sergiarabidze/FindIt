@@ -17,7 +17,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Post Details"
+            android:text="@string/post_details"
             android:textSize="30sp"
             android:layout_gravity="center"
             android:textStyle="bold"
@@ -27,20 +27,13 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Contact Information:"
+            android:text="@string/contact_information"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_marginBottom="8dp" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_user_fullname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="Jemal kakauridze" />
+
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -56,6 +49,8 @@
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:gravity="center_vertical">
+
+
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/iv_profile_picture"
@@ -76,6 +71,14 @@
                     android:paddingStart="12dp">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_user_fullname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="Jemal kakauridze" />
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_user_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -87,7 +90,7 @@
                         android:id="@+id/tv_phone_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="123-456-7890"
+                        tools:text="123-456-7890"
                         android:textColor="@android:color/holo_blue_dark"
                         android:textStyle="italic"
                         android:autoLink="none"

@@ -72,7 +72,7 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
                     email = etEmail.text.toString(),
                 )
                 updatedProfile?.let {
-                    viewModel.updateUserProfileData(it)
+                    viewModel.onEvent(EditProfileEvent.OnUserProfileChanged(it))
                     viewModel.onEvent(EditProfileEvent.OnSaveClicked)
                 }
             }
@@ -88,7 +88,7 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
             viewModel.state.collectLatest { state ->
                 with(binding) {
                     progressBar.isGone = !state.isLoading
-
+                    btnSave.isEnabled = !state.isLoading
                     state.profileBitmap?.let {
                         imageProfile.setImageBitmap(it)
                     } ?: state.userProfile?.profileImageUrl?.takeIf { it.isNotEmpty() }?.let {
@@ -109,14 +109,15 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
             viewModel.effect.collectLatest { effect ->
                 when (effect) {
                     is EditProfileEffect.ProfileSaved -> {
+                        binding.tvErrorMessage.text = ""
                         binding.root.showSnackBar("Profile saved successfully!")
-                        findNavController().popBackStack()
+                        navigateToProfile()
                     }
                     is EditProfileEffect.ProfileImageUpdated -> {
                         binding.root.showSnackBar("Image updated!")
                     }
                     is EditProfileEffect.ShowError -> {
-                        binding.root.showSnackBar(effect.message)
+                        binding.tvErrorMessage.text = effect.message
                     }
                 }
             }
@@ -147,6 +148,11 @@ class EditProfileFragment : BaseFragment<FragmentEditProfileBinding>(FragmentEdi
 
     private fun openOptionsDialog() {
         val action = EditProfileFragmentDirections.actionEditProfileFragmentToImageOptionDialog()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToProfile(){
+        val action = EditProfileFragmentDirections.actionEditProfileFragmentToProfileFragment()
         findNavController().navigate(action)
     }
 }

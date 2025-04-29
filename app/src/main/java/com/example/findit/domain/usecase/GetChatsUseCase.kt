@@ -2,6 +2,7 @@ package com.example.findit.domain.usecase
 
 import com.example.findit.domain.model.Chat
 import com.example.findit.domain.repository.GetAllChatsRepository
+import com.example.findit.domain.repository.LanguageRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -12,3 +13,6 @@ class GetChatsUseCase @Inject constructor(
         return repository.getAllChatsForUser(userId)
     }
 }
+
+
+
