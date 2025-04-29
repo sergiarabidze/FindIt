@@ -22,18 +22,16 @@ abstract class BaseMapFragment<VB : ViewBinding>(private val inflate: Inflate<VB
     protected lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationPermissionRequest: ActivityResultLauncher<Array<String>>
 
-    // Registering ActivityResultLauncher in onAttach
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        // Register the permission request launcher here
         locationPermissionRequest = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             if (permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
                 setupLocation()
             } else {
-                binding.root.showSnackBar("Location permission denied")
+                binding.root.showSnackBar(getString(R.string.location_permission_denied))
             }
         }
     }

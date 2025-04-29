@@ -67,5 +67,7 @@
     <string name="profile_saved_successfully">პროფილი შეინახულია</string>
     <string name="image_updated">ფოტო განახლდა</string>
     <string name="take_photo">გადაიღე ფოტო</string>
+    <string name="post_details">პოსტის დეტალები</string>
+    <string name="contact_information">საკონტაქტო ინფორმაცია:</string>
 
 </resources>

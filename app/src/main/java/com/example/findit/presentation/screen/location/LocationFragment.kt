@@ -72,7 +72,7 @@ class LocationFragment : BaseMapFragment<FragmentLocationBinding>(FragmentLocati
                         MarkerOptions()
                             .position(userLocation)
                             .title(getString(R.string.your_location))
-                            .icon(requireContext().getBitmapDescriptorFromVector(R.drawable.me_icon))
+                            .icon(requireContext().getBitmapDescriptorFromVector(R.drawable.me_icon, 120, 120))
                     )
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                 }

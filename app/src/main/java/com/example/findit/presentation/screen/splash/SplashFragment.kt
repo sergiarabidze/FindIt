@@ -15,10 +15,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     private val viewModel: SplashViewModel by viewModels()
 
-    override fun setUp() {}
-
-    override fun setListeners() {}
-
     override fun setObservers() {
         launchCoroutine {
             viewModel.effect.collect { effect ->
